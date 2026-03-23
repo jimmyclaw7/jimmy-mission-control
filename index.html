@@ -13,19 +13,18 @@
       --bg: #0d0d0d;
       --bg2: #141414;
       --bg3: #1a1a1a;
-      --border: #242424;
-      --border2: #2e2e2e;
+      --border: #2a2a2a;
+      --border2: #333;
       --accent: #7c6af7;
-      --accent-dim: rgba(124, 106, 247, 0.15);
+      --accent-dim: rgba(124, 106, 247, 0.13);
       --accent-hover: #9585f9;
       --text: #e8e8e8;
       --text2: #888;
-      --text3: #555;
+      --text3: #4a4a4a;
       --green: #22c55e;
       --yellow: #eab308;
       --red: #ef4444;
       --sidebar-w: 220px;
-      --bottom-h: 60px;
     }
 
     html, body {
@@ -35,30 +34,33 @@
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
       font-size: 14px;
       line-height: 1.5;
-      overflow: hidden;
     }
 
-    /* ── Layout ── */
+    /* ─── Layout ─── */
     #app {
       display: flex;
-      height: 100vh;
+      min-height: 100vh;
     }
 
-    /* ── Sidebar (desktop) ── */
+    /* ─── Sidebar (desktop) ─── */
     #sidebar {
       width: var(--sidebar-w);
       background: var(--bg2);
       border-right: 1px solid var(--border);
       display: flex;
       flex-direction: column;
-      padding: 20px 0;
+      padding: 0;
       flex-shrink: 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      z-index: 10;
     }
 
     .sidebar-logo {
-      padding: 0 18px 20px;
+      padding: 22px 18px 18px;
       border-bottom: 1px solid var(--border);
-      margin-bottom: 8px;
     }
 
     .sidebar-logo h1 {
@@ -71,111 +73,320 @@
     .sidebar-logo .subtitle {
       font-size: 11px;
       color: var(--text3);
-      margin-top: 2px;
+      margin-top: 3px;
+    }
+
+    .nav-section {
+      flex: 1;
+      padding: 10px 0;
+      overflow-y: auto;
     }
 
     .nav-item {
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 9px 18px;
+      padding: 0 12px;
+      margin: 2px 8px;
       cursor: pointer;
       color: var(--text2);
       font-size: 13.5px;
       font-weight: 500;
-      border-radius: 0;
-      transition: all 0.12s;
-      border-left: 2px solid transparent;
+      height: 40px;
+      border-radius: 8px;
+      transition: all 0.15s ease;
       user-select: none;
     }
 
     .nav-item:hover {
       color: var(--text);
-      background: var(--bg3);
+      background: rgba(255,255,255,0.04);
     }
 
     .nav-item.active {
-      color: var(--text);
+      color: var(--accent-hover);
       background: var(--accent-dim);
-      border-left-color: var(--accent);
     }
 
     .nav-item .icon {
       font-size: 16px;
       width: 20px;
       text-align: center;
+      flex-shrink: 0;
     }
 
     .sidebar-footer {
-      margin-top: auto;
-      padding: 12px 18px;
+      padding: 14px 18px;
       border-top: 1px solid var(--border);
       font-size: 11px;
       color: var(--text3);
     }
 
-    /* ── Main content ── */
-    #main {
-      flex: 1;
-      overflow-y: auto;
-      padding: 28px 32px;
-    }
-
-    /* ── Bottom tabs (mobile) ── */
-    #bottom-tabs {
+    /* ─── Mobile header ─── */
+    #mobile-header {
       display: none;
       position: fixed;
-      bottom: 0;
+      top: 0;
       left: 0;
       right: 0;
-      height: var(--bottom-h);
+      height: 56px;
       background: var(--bg2);
-      border-top: 1px solid var(--border);
-      z-index: 100;
+      border-bottom: 1px solid var(--border);
+      z-index: 50;
+      align-items: center;
+      padding: 0 16px;
     }
 
-    .tabs-inner {
+    #hamburger {
+      width: 40px;
+      height: 40px;
       display: flex;
-      height: 100%;
-    }
-
-    .tab-btn {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 3px;
       cursor: pointer;
-      color: var(--text3);
-      font-size: 10px;
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 22px;
+      flex-shrink: 0;
+      transition: background 0.12s;
+    }
+
+    #hamburger:hover { background: rgba(255,255,255,0.06); }
+
+    #mobile-header .header-title {
+      flex: 1;
+      text-align: center;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      color: var(--text);
+    }
+
+    #status-dot {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 6px rgba(34,197,94,0.5);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* ─── Drawer overlay ─── */
+    #drawer-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 99;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    #drawer-overlay.open {
+      display: block;
+      opacity: 1;
+    }
+
+    #drawer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 280px;
+      height: 100vh;
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(-100%);
+      transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    #drawer.open {
+      transform: translateX(0);
+    }
+
+    .drawer-header {
+      padding: 20px 20px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .drawer-header h2 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .drawer-close {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: 6px;
+      color: var(--text2);
+      font-size: 18px;
+      transition: background 0.12s;
+    }
+
+    .drawer-close:hover { background: rgba(255,255,255,0.06); color: var(--text); }
+
+    .drawer-nav {
+      flex: 1;
+      padding: 12px 0;
+      overflow-y: auto;
+    }
+
+    .drawer-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 0 20px;
+      min-height: 52px;
+      cursor: pointer;
+      color: var(--text2);
+      font-size: 15px;
       font-weight: 500;
-      transition: color 0.12s;
+      border-radius: 0;
+      transition: all 0.12s;
       user-select: none;
     }
 
-    .tab-btn .icon { font-size: 18px; }
-    .tab-btn.active { color: var(--accent); }
+    .drawer-nav-item:hover {
+      color: var(--text);
+      background: rgba(255,255,255,0.04);
+    }
 
-    /* ── Section pages ── */
-    .page { display: none; }
-    .page.active { display: block; }
+    .drawer-nav-item.active {
+      color: var(--accent-hover);
+      background: var(--accent-dim);
+    }
 
+    .drawer-nav-item .icon {
+      font-size: 20px;
+      width: 26px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .drawer-footer {
+      padding: 14px 20px;
+      border-top: 1px solid var(--border);
+      font-size: 11px;
+      color: var(--text3);
+    }
+
+    /* ─── Main content ─── */
+    #main {
+      flex: 1;
+      margin-left: var(--sidebar-w);
+      padding: 32px 36px;
+      min-height: 100vh;
+    }
+
+    /* ─── Pages ─── */
+    .page {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      max-width: 820px;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .page.fade-in {
+      opacity: 1;
+    }
+
+    /* ─── Typography ─── */
     .page-title {
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 700;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
     .page-sub {
       color: var(--text2);
       font-size: 13px;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
     }
 
-    /* ── Cards ── */
+    /* ─── Status bar ─── */
+    .status-bar {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--text2);
+    }
+
+    .status-bar .date-label {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    /* ─── Priority cards ─── */
+    .priority-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 18px;
+      margin-bottom: 12px;
+      transition: border-color 0.12s;
+    }
+
+    .priority-card.red   { border-left-color: var(--red); }
+    .priority-card.yellow { border-left-color: var(--yellow); }
+    .priority-card.green  { border-left-color: var(--green); }
+
+    .priority-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .priority-card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .priority-card-body {
+      font-size: 13px;
+      color: var(--text2);
+      line-height: 1.55;
+    }
+
+    /* ─── Cards ─── */
     .card {
-      background: var(--bg2);
+      background: var(--bg3);
       border: 1px solid var(--border);
       border-radius: 10px;
       padding: 18px 20px;
@@ -188,7 +399,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
 
     .card-title {
@@ -203,7 +414,7 @@
       line-height: 1.6;
     }
 
-    /* ── Badges ── */
+    /* ─── Badges / pills ─── */
     .badge {
       display: inline-flex;
       align-items: center;
@@ -213,32 +424,34 @@
       font-size: 11px;
       font-weight: 600;
       letter-spacing: 0.02em;
+      white-space: nowrap;
     }
 
-    .badge-yellow { background: rgba(234, 179, 8, 0.15); color: var(--yellow); }
-    .badge-green  { background: rgba(34, 197, 94, 0.15); color: var(--green); }
-    .badge-purple { background: var(--accent-dim); color: var(--accent); }
-    .badge-gray   { background: rgba(136,136,136,0.12); color: var(--text2); }
+    .badge-red    { background: rgba(239,68,68,0.15); color: var(--red); }
+    .badge-yellow { background: rgba(234,179,8,0.15); color: var(--yellow); }
+    .badge-green  { background: rgba(34,197,94,0.15); color: var(--green); }
+    .badge-purple { background: var(--accent-dim); color: var(--accent-hover); }
+    .badge-gray   { background: rgba(136,136,136,0.1); color: var(--text2); }
 
     .dot {
       width: 6px; height: 6px;
       border-radius: 50%;
       display: inline-block;
     }
+    .dot-red    { background: var(--red); }
     .dot-yellow { background: var(--yellow); }
     .dot-green  { background: var(--green); }
     .dot-purple { background: var(--accent); }
-    .dot-gray   { background: var(--text3); }
 
-    /* ── Grid ── */
+    /* ─── Grid ─── */
     .grid-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 14px;
+      gap: 12px;
       margin-bottom: 14px;
     }
 
-    /* ── Activity feed ── */
+    /* ─── Activity feed ─── */
     .feed-item {
       display: flex;
       align-items: flex-start;
@@ -260,37 +473,40 @@
     .feed-title { font-size: 13px; font-weight: 500; color: var(--text); }
     .feed-time  { font-size: 11px; color: var(--text3); margin-top: 2px; }
 
-    /* ── Bitcoin page ── */
-    .btc-placeholder {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 32px 20px;
-      text-align: center;
-      color: var(--text3);
+    /* ─── Stat cards ─── */
+    .stat-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 20px;
     }
 
-    .btc-icon {
-      font-size: 48px;
-      margin-bottom: 12px;
-      opacity: 0.4;
+    .stat-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 8px;
     }
 
-    .coming-soon {
-      font-size: 12px;
+    .stat-value {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.1;
+    }
+
+    .stat-sub {
+      font-size: 11px;
       color: var(--text3);
-      margin-top: 8px;
+      margin-top: 6px;
       font-style: italic;
     }
 
-    /* ── Links ── */
-    a {
-      color: var(--accent);
-      text-decoration: none;
-    }
-
-    a:hover { color: var(--accent-hover); text-decoration: underline; }
+    /* ─── Links ─── */
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { color: var(--accent-hover); }
 
     .link-row {
       display: flex;
@@ -307,11 +523,97 @@
     }
 
     .link-row:last-child { border-bottom: none; }
-    .link-row:hover { color: var(--accent); }
-    .link-row .link-icon { font-size: 20px; width: 28px; text-align: center; }
-    .link-row .link-arrow { margin-left: auto; color: var(--text3); }
+    .link-row:hover { color: var(--accent-hover); }
+    .link-row .link-icon { font-size: 18px; width: 26px; text-align: center; }
+    .link-row .link-arrow { margin-left: auto; color: var(--text3); font-size: 13px; }
 
-    /* ── Boats ── */
+    /* ─── Links grid ─── */
+    .links-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .link-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      text-decoration: none;
+      color: var(--text2);
+      font-size: 12px;
+      font-weight: 500;
+      text-align: center;
+      transition: all 0.15s ease;
+    }
+
+    .link-card:hover {
+      color: var(--text);
+      border-color: var(--border2);
+      background: #1e1e1e;
+      transform: translateY(-1px);
+    }
+
+    .link-card .lc-icon {
+      font-size: 26px;
+      line-height: 1;
+    }
+
+    /* ─── Boats ─── */
+    .progress-wrap {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 18px;
+      margin-bottom: 14px;
+    }
+
+    .progress-label {
+      font-size: 12px;
+      color: var(--text2);
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+
+    .progress-bar-bg {
+      background: var(--border);
+      border-radius: 99px;
+      height: 6px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      border-radius: 99px;
+      background: var(--accent);
+      width: 50%;
+      transition: width 0.4s ease;
+    }
+
+    .checklist {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      color: var(--text2);
+    }
+
+    .check-item.done { color: var(--green); }
+    .check-item.pending { color: var(--text3); }
+
     .boat-item {
       display: flex;
       align-items: center;
@@ -323,9 +625,9 @@
     .boat-item:last-child { border-bottom: none; }
 
     .boat-num {
-      width: 26px; height: 26px;
-      border-radius: 6px;
-      background: var(--bg3);
+      width: 28px; height: 28px;
+      border-radius: 7px;
+      background: var(--bg2);
       border: 1px solid var(--border2);
       display: flex; align-items: center; justify-content: center;
       font-size: 12px; font-weight: 700;
@@ -334,7 +636,7 @@
     }
 
     .boat-info { flex: 1; }
-    .boat-name { font-size: 13px; font-weight: 600; }
+    .boat-name { font-size: 13px; font-weight: 600; color: var(--text); }
     .boat-meta { font-size: 12px; color: var(--text2); margin-top: 2px; }
 
     .boat-price {
@@ -353,199 +655,259 @@
 
     .stars { color: #f59e0b; }
 
-    /* ── Stat cards ── */
-    .stat-card {
-      background: var(--bg2);
+    /* ─── Notes ─── */
+    #notes-area {
+      width: 100%;
+      min-height: 300px;
+      background: var(--bg3);
       border: 1px solid var(--border);
       border-radius: 10px;
-      padding: 18px 20px;
-    }
-
-    .stat-label {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text3);
-      text-transform: uppercase;
-      letter-spacing: 0.07em;
-      margin-bottom: 8px;
-    }
-
-    .stat-value {
-      font-size: 24px;
-      font-weight: 700;
+      padding: 16px;
       color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.15s;
     }
 
-    .stat-sub {
-      font-size: 12px;
+    #notes-area:focus {
+      border-color: var(--accent);
+    }
+
+    .notes-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 10px;
+      font-size: 11px;
       color: var(--text3);
-      margin-top: 4px;
     }
 
-    /* ── Notice ── */
+    .notes-saved {
+      color: var(--green);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .notes-saved.show { opacity: 1; }
+
+    /* ─── Misc ─── */
     .notice {
       background: var(--accent-dim);
-      border: 1px solid rgba(124,106,247,0.3);
+      border: 1px solid rgba(124,106,247,0.25);
       border-radius: 8px;
-      padding: 12px 16px;
+      padding: 11px 15px;
       font-size: 12.5px;
       color: var(--accent-hover);
       margin-bottom: 14px;
     }
 
-    /* ── Responsive ── */
-    @media (max-width: 680px) {
+    .section-heading {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin: 20px 0 10px;
+    }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 700px) {
       #sidebar { display: none; }
-      #bottom-tabs { display: flex; }
+      #mobile-header { display: flex; }
 
       #main {
-        padding: 20px 16px;
-        padding-bottom: calc(var(--bottom-h) + 16px);
+        margin-left: 0;
+        padding: 16px 16px 40px;
+        padding-top: calc(56px + 20px);
       }
 
       .grid-2 {
         grid-template-columns: 1fr;
       }
 
-      .page-title { font-size: 20px; }
+      .page-title { font-size: 18px; }
+      .links-grid { grid-template-columns: repeat(3, 1fr); }
     }
   </style>
 </head>
 <body>
 <div id="app">
 
-  <!-- ── Sidebar ── -->
+  <!-- ─── Sidebar (desktop) ─── -->
   <nav id="sidebar">
     <div class="sidebar-logo">
       <h1>Mission Control</h1>
       <div class="subtitle">Rohan Hirani · Miami</div>
     </div>
 
-    <div class="nav-item active" data-page="now">
-      <span class="icon">⚡</span> Now
-    </div>
-    <div class="nav-item" data-page="bitcoin">
-      <span class="icon">₿</span> Bitcoin
-    </div>
-    <div class="nav-item" data-page="boats">
-      <span class="icon">⛵</span> Boats
-    </div>
-    <div class="nav-item" data-page="tools">
-      <span class="icon">🔧</span> Tools
+    <div class="nav-section">
+      <div class="nav-item active" data-page="now">
+        <span class="icon">⚡</span> Now
+      </div>
+      <div class="nav-item" data-page="research">
+        <span class="icon">₿</span> Research
+      </div>
+      <div class="nav-item" data-page="boats">
+        <span class="icon">⛵</span> Boats
+      </div>
+      <div class="nav-item" data-page="links">
+        <span class="icon">🔗</span> Links
+      </div>
+      <div class="nav-item" data-page="notes">
+        <span class="icon">📝</span> Notes
+      </div>
     </div>
 
     <div class="sidebar-footer">
-      Jimmy OpenClaw · v1.0
+      Jimmy · OpenClaw v1.0
     </div>
   </nav>
 
-  <!-- ── Main ── -->
+  <!-- ─── Mobile Header ─── -->
+  <div id="mobile-header">
+    <div id="hamburger" onclick="openDrawer()">☰</div>
+    <div class="header-title">Mission Control</div>
+    <div id="status-dot"><div class="live-dot"></div></div>
+  </div>
+
+  <!-- ─── Drawer Overlay ─── -->
+  <div id="drawer-overlay" onclick="closeDrawer()"></div>
+
+  <!-- ─── Drawer ─── -->
+  <div id="drawer">
+    <div class="drawer-header">
+      <h2>Mission Control</h2>
+      <div class="drawer-close" onclick="closeDrawer()">✕</div>
+    </div>
+    <div class="drawer-nav">
+      <div class="drawer-nav-item active" data-page="now">
+        <span class="icon">⚡</span> Now
+      </div>
+      <div class="drawer-nav-item" data-page="research">
+        <span class="icon">₿</span> Research
+      </div>
+      <div class="drawer-nav-item" data-page="boats">
+        <span class="icon">⛵</span> Boats
+      </div>
+      <div class="drawer-nav-item" data-page="links">
+        <span class="icon">🔗</span> Links
+      </div>
+      <div class="drawer-nav-item" data-page="notes">
+        <span class="icon">📝</span> Notes
+      </div>
+    </div>
+    <div class="drawer-footer">Rohan Hirani · Miami, FL</div>
+  </div>
+
+  <!-- ─── Main ─── -->
   <main id="main">
 
-    <!-- NOW -->
+    <!-- ═══ NOW ═══ -->
     <section class="page active" id="page-now">
       <div class="page-title">Now</div>
-      <div class="page-sub">Active projects and status as of March 2026</div>
+      <div class="page-sub">Command center · March 2026</div>
 
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">⛵ Boat Trip · Apr 18</div>
-            <span class="badge badge-yellow"><span class="dot dot-yellow"></span> Waiting</span>
-          </div>
-          <div class="card-body">
-            Group of 10 · 4 inquiries sent on GetMyBoat.<br/>
-            Awaiting responses from captains.
-          </div>
+      <div class="status-bar">
+        <div class="live-dot" style="flex-shrink:0"></div>
+        <span class="date-label">Today is Sunday, March 22, 2026</span>
+        <span style="margin-left:auto; font-size:12px;">Miami, FL · EDT</span>
+      </div>
+
+      <!-- Priority cards -->
+      <div class="section-heading">Priority Items</div>
+
+      <div class="priority-card red">
+        <div class="priority-card-header">
+          <div class="priority-card-title">🎯 Strategy Interview</div>
+          <span class="badge badge-red"><span class="dot dot-red"></span> Urgent</span>
         </div>
-
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">🏢 Strategy Interview</div>
-            <span class="badge badge-purple"><span class="dot dot-purple"></span> Active</span>
-          </div>
-          <div class="card-body">
-            Treasury Associate · Bitcoin team.<br/>
-            Prepping OpenClaw demos + BTC concepts.
-          </div>
+        <div class="priority-card-body">
+          Interview prep in progress — Bitcoin team asked about OpenClaw. Treasury Associate role, Bitcoin team at Strategy (MicroStrategy).
         </div>
+      </div>
 
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">💼 CROBO Launch</div>
-            <span class="badge badge-purple"><span class="dot dot-purple"></span> Building</span>
-          </div>
-          <div class="card-body">
-            Earn / yield on idle cash via STRC.<br/>
-            Head of Product — core priority.
-          </div>
+      <div class="priority-card yellow">
+        <div class="priority-card-header">
+          <div class="priority-card-title">🚢 Boat Trip · April 18</div>
+          <span class="badge badge-yellow"><span class="dot dot-yellow"></span> Waiting</span>
         </div>
+        <div class="priority-card-body">
+          4 inquiries sent on GetMyBoat, awaiting captain responses. Group of ~10 people.
+        </div>
+      </div>
 
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">📊 bitcoinquant.co</div>
-            <span class="badge badge-green"><span class="dot dot-green"></span> Live</span>
-          </div>
-          <div class="card-body">
-            Tracking BTC Treasury companies &amp; preferred equity issuances.
-          </div>
+      <div class="priority-card yellow">
+        <div class="priority-card-header">
+          <div class="priority-card-title">🏦 CROBO Product</div>
+          <span class="badge badge-yellow"><span class="dot dot-yellow"></span> Active</span>
+        </div>
+        <div class="priority-card-body">
+          STRC yield product launch ongoing. Earn / yield on idle cash via MicroStrategy preferred equity.
+        </div>
+      </div>
+
+      <div class="priority-card green">
+        <div class="priority-card-header">
+          <div class="priority-card-title">📊 bitcoinquant.co</div>
+          <span class="badge badge-green"><span class="dot dot-green"></span> Live</span>
+        </div>
+        <div class="priority-card-body">
+          Running and monitoring BTC treasury companies and their preferred equity issuances.
         </div>
       </div>
 
       <!-- Activity feed -->
+      <div class="section-heading">Recent Activity</div>
       <div class="card">
-        <div class="card-header">
-          <div class="card-title">Recent Activity</div>
-          <span class="badge badge-gray">Today</span>
+        <div class="feed-item">
+          <div class="feed-dot" style="background:var(--accent)"></div>
+          <div class="feed-content">
+            <div class="feed-title">Mission Control v2 deployed — mobile redesign</div>
+            <div class="feed-time">March 22, 2026 · Tonight</div>
+          </div>
         </div>
-        <div>
-          <div class="feed-item">
-            <div class="feed-dot" style="background:var(--accent)"></div>
-            <div class="feed-content">
-              <div class="feed-title">Mission Control dashboard deployed</div>
-              <div class="feed-time">March 22, 2026 · 8:00 PM EDT</div>
-            </div>
+        <div class="feed-item">
+          <div class="feed-dot" style="background:var(--yellow)"></div>
+          <div class="feed-content">
+            <div class="feed-title">4 boat inquiries sent on GetMyBoat for Apr 18</div>
+            <div class="feed-time">March 22, 2026 · Earlier today</div>
           </div>
-          <div class="feed-item">
-            <div class="feed-dot" style="background:var(--yellow)"></div>
-            <div class="feed-content">
-              <div class="feed-title">4 boat inquiries sent on GetMyBoat for Apr 18</div>
-              <div class="feed-time">March 22, 2026 · Earlier today</div>
-            </div>
+        </div>
+        <div class="feed-item">
+          <div class="feed-dot" style="background:var(--green)"></div>
+          <div class="feed-content">
+            <div class="feed-title">OpenClaw set up · first session with Jimmy</div>
+            <div class="feed-time">March 22, 2026 · First session</div>
           </div>
-          <div class="feed-item">
-            <div class="feed-dot" style="background:var(--green)"></div>
-            <div class="feed-content">
-              <div class="feed-title">OpenClaw set up · first session with Jimmy</div>
-              <div class="feed-time">March 22, 2026 · First session</div>
-            </div>
-          </div>
-          <div class="feed-item">
-            <div class="feed-dot" style="background:var(--text3)"></div>
-            <div class="feed-content">
-              <div class="feed-title">Strategy interview scheduled · Bitcoin team</div>
-              <div class="feed-time">Coming up · Prepping now</div>
-            </div>
+        </div>
+        <div class="feed-item">
+          <div class="feed-dot" style="background:var(--text3)"></div>
+          <div class="feed-content">
+            <div class="feed-title">Strategy interview scheduled · Bitcoin team</div>
+            <div class="feed-time">Coming up · Prepping now</div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- BITCOIN -->
-    <section class="page" id="page-bitcoin">
-      <div class="page-title">Bitcoin</div>
-      <div class="page-sub">Treasury companies &amp; preferred equity tracker</div>
+    <!-- ═══ RESEARCH ═══ -->
+    <section class="page" id="page-research">
+      <div class="page-title">Research</div>
+      <div class="page-sub">Bitcoin treasury companies &amp; preferred equity</div>
 
       <div class="grid-2">
         <div class="stat-card">
           <div class="stat-label">BTC Price</div>
           <div class="stat-value">—</div>
-          <div class="stat-sub coming-soon">Live data coming soon</div>
+          <div class="stat-sub">Tap to refresh · live data coming soon</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">MSTR Price</div>
+          <div class="stat-label">MSTR · MicroStrategy</div>
           <div class="stat-value">—</div>
-          <div class="stat-sub coming-soon">Live data coming soon</div>
+          <div class="stat-sub">Tap to refresh · live data coming soon</div>
         </div>
       </div>
 
@@ -555,16 +917,13 @@
           <span class="badge badge-purple">CROBO Underlying</span>
         </div>
         <div class="card-body">
-          STRC is the preferred equity instrument issued by MicroStrategy (Strategy).<br/>
-          CROBO uses it to offer earn / yield on idle cash for retail investors.<br/><br/>
-          <span class="coming-soon">Live STRC data coming soon</span>
+          STRC is the preferred equity instrument issued by Strategy (MicroStrategy). CROBO uses it to offer earn / yield on idle cash for retail investors.<br/><br/>
+          <span style="font-size:11px; color:var(--text3); font-style:italic;">Live STRC data coming soon</span>
         </div>
       </div>
 
+      <div class="section-heading">Quick Links</div>
       <div class="card">
-        <div class="card-header">
-          <div class="card-title">🔗 Links</div>
-        </div>
         <a href="https://bitcoinquant.co" target="_blank" class="link-row">
           <span class="link-icon">📊</span> bitcoinquant.co
           <span class="link-arrow">↗</span>
@@ -573,16 +932,36 @@
           <span class="link-icon">🏢</span> MicroStrategy.com
           <span class="link-arrow">↗</span>
         </a>
+        <a href="https://gorgeous-loan-b3a.notion.site/" target="_blank" class="link-row">
+          <span class="link-icon">📄</span> Strategy Interview Prep
+          <span class="link-arrow">↗</span>
+        </a>
+      </div>
+
+      <div class="section-heading">Recent News</div>
+      <div class="card">
+        <div class="card-body" style="text-align:center; padding:16px 0; color:var(--text3); font-style:italic;">
+          News feed coming soon
+        </div>
       </div>
     </section>
 
-    <!-- BOATS -->
+    <!-- ═══ BOATS ═══ -->
     <section class="page" id="page-boats">
       <div class="page-title">Boats</div>
       <div class="page-sub">April 18 Charter · Miami</div>
 
-      <div class="notice">
-        📬 4 inquiries sent · Awaiting captain responses
+      <div class="progress-wrap">
+        <div class="progress-label">Step 3 of 4 — Awaiting Responses</div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" style="width:50%"></div>
+        </div>
+        <div class="checklist">
+          <div class="check-item done">✅ Research done</div>
+          <div class="check-item done">✅ Inquiries sent</div>
+          <div class="check-item pending">⏳ Responses</div>
+          <div class="check-item pending">⏳ Book</div>
+        </div>
       </div>
 
       <div class="card" style="margin-bottom:14px">
@@ -591,16 +970,17 @@
           <span class="badge badge-yellow"><span class="dot dot-yellow"></span> Pending</span>
         </div>
         <div class="card-body">
-          <strong>Date:</strong> April 18, 2026<br/>
-          <strong>Group:</strong> ~10 people (possibly 20 → 2 boats)<br/>
-          <strong>Platform:</strong> GetMyBoat<br/>
-          <strong>Plan:</strong> Leaning toward booking 2 boats for 20 people
+          <strong style="color:var(--text)">Date:</strong> April 18, 2026<br/>
+          <strong style="color:var(--text)">Group:</strong> ~10 people (possibly 20 → 2 boats)<br/>
+          <strong style="color:var(--text)">Platform:</strong> GetMyBoat<br/>
+          <strong style="color:var(--text)">Plan:</strong> Leaning toward booking 2 boats for 20 people
         </div>
       </div>
 
       <div class="card">
         <div class="card-header">
-          <div class="card-title">⛵ Inquiries Sent</div>
+          <div class="card-title">Inquiries Sent</div>
+          <span class="badge badge-gray">4 sent</span>
         </div>
 
         <div class="boat-item">
@@ -654,81 +1034,155 @@
 
       <div style="margin-top:14px">
         <a href="https://gorgeous-loan-b3a.notion.site/Miami-Boat-Charter-April-18-Group-of-10-32b4844cc0758153bf15f1b891469137"
-           target="_blank" class="link-row" style="padding:14px 0; border-top: 1px solid var(--border);">
+           target="_blank" class="link-row" style="padding:14px 0">
           <span class="link-icon">📄</span> Open Notion Planning Doc
+          <span class="link-arrow">↗</span>
+        </a>
+        <a href="https://www.getmyboat.com/en/messages/"
+           target="_blank" class="link-row" style="padding:14px 0">
+          <span class="link-icon">📬</span> GetMyBoat Inbox
           <span class="link-arrow">↗</span>
         </a>
       </div>
     </section>
 
-    <!-- TOOLS -->
-    <section class="page" id="page-tools">
-      <div class="page-title">Tools</div>
-      <div class="page-sub">Quick links to your stack</div>
+    <!-- ═══ LINKS ═══ -->
+    <section class="page" id="page-links">
+      <div class="page-title">Links</div>
+      <div class="page-sub">Quick access to your stack</div>
 
-      <div class="card">
-        <a href="https://github.com/jimmyclaw7" target="_blank" class="link-row">
-          <span class="link-icon">🐙</span> GitHub
-          <span class="link-arrow">↗</span>
+      <div class="links-grid">
+        <a href="https://github.com/jimmyclaw7" target="_blank" class="link-card">
+          <span class="lc-icon">🐙</span>
+          <span>GitHub</span>
         </a>
-        <a href="https://notion.so" target="_blank" class="link-row">
-          <span class="link-icon">📝</span> Notion
-          <span class="link-arrow">↗</span>
+        <a href="https://notion.so" target="_blank" class="link-card">
+          <span class="lc-icon">📝</span>
+          <span>Notion</span>
         </a>
-        <a href="https://docs.google.com/spreadsheets" target="_blank" class="link-row">
-          <span class="link-icon">📊</span> Google Sheets
-          <span class="link-arrow">↗</span>
+        <a href="https://vercel.com/dashboard" target="_blank" class="link-card">
+          <span class="lc-icon">▲</span>
+          <span>Vercel</span>
         </a>
-        <a href="https://vercel.com/dashboard" target="_blank" class="link-row">
-          <span class="link-icon">▲</span> Vercel
-          <span class="link-arrow">↗</span>
+        <a href="https://bitcoinquant.co" target="_blank" class="link-card">
+          <span class="lc-icon">📊</span>
+          <span>bitcoinquant.co</span>
         </a>
-        <a href="https://www.getmyboat.com/en/messages/" target="_blank" class="link-row">
-          <span class="link-icon">⛵</span> GetMyBoat Inbox
-          <span class="link-arrow">↗</span>
+        <a href="https://www.microstrategy.com" target="_blank" class="link-card">
+          <span class="lc-icon">🏢</span>
+          <span>MicroStrategy</span>
         </a>
+        <a href="https://www.getmyboat.com/en/messages/" target="_blank" class="link-card">
+          <span class="lc-icon">⛵</span>
+          <span>GetMyBoat</span>
+        </a>
+        <a href="https://docs.google.com/spreadsheets" target="_blank" class="link-card">
+          <span class="lc-icon">📈</span>
+          <span>Sheets</span>
+        </a>
+        <a href="https://mail.google.com" target="_blank" class="link-card">
+          <span class="lc-icon">📧</span>
+          <span>Gmail</span>
+        </a>
+        <a href="https://calendar.google.com" target="_blank" class="link-card">
+          <span class="lc-icon">📅</span>
+          <span>Calendar</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ═══ NOTES ═══ -->
+    <section class="page" id="page-notes">
+      <div class="page-title">Notes</div>
+      <div class="page-sub">Jot things down · saves automatically</div>
+
+      <textarea id="notes-area" placeholder="Start typing..."></textarea>
+
+      <div class="notes-footer">
+        <span>Auto-saves to local storage</span>
+        <span id="notes-saved" class="notes-saved">✓ Saved</span>
       </div>
     </section>
 
   </main>
-
-  <!-- ── Bottom tabs (mobile) ── -->
-  <div id="bottom-tabs">
-    <div class="tabs-inner">
-      <div class="tab-btn active" data-page="now">
-        <span class="icon">⚡</span>
-        <span>Now</span>
-      </div>
-      <div class="tab-btn" data-page="bitcoin">
-        <span class="icon">₿</span>
-        <span>Bitcoin</span>
-      </div>
-      <div class="tab-btn" data-page="boats">
-        <span class="icon">⛵</span>
-        <span>Boats</span>
-      </div>
-      <div class="tab-btn" data-page="tools">
-        <span class="icon">🔧</span>
-        <span>Tools</span>
-      </div>
-    </div>
-  </div>
-
 </div>
 
 <script>
+  // ─── Navigation ───
   const pages = document.querySelectorAll('.page');
   const navItems = document.querySelectorAll('.nav-item');
-  const tabBtns = document.querySelectorAll('.tab-btn');
+  const drawerItems = document.querySelectorAll('.drawer-nav-item');
 
   function activate(pageId) {
-    pages.forEach(p => p.classList.toggle('active', p.id === 'page-' + pageId));
+    pages.forEach(p => {
+      p.classList.remove('active', 'fade-in');
+    });
     navItems.forEach(n => n.classList.toggle('active', n.dataset.page === pageId));
-    tabBtns.forEach(t => t.classList.toggle('active', t.dataset.page === pageId));
+    drawerItems.forEach(d => d.classList.toggle('active', d.dataset.page === pageId));
+
+    const target = document.getElementById('page-' + pageId);
+    if (target) {
+      target.classList.add('active');
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => target.classList.add('fade-in'));
+      });
+    }
   }
 
   navItems.forEach(n => n.addEventListener('click', () => activate(n.dataset.page)));
-  tabBtns.forEach(t => t.addEventListener('click', () => activate(t.dataset.page)));
+  drawerItems.forEach(d => d.addEventListener('click', () => {
+    activate(d.dataset.page);
+    closeDrawer();
+  }));
+
+  // Fade in current page on load
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      document.querySelector('.page.active')?.classList.add('fade-in');
+    });
+  });
+
+  // ─── Drawer ───
+  function openDrawer() {
+    const overlay = document.getElementById('drawer-overlay');
+    const drawer = document.getElementById('drawer');
+    overlay.style.display = 'block';
+    requestAnimationFrame(() => {
+      overlay.classList.add('open');
+      drawer.classList.add('open');
+    });
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeDrawer() {
+    const overlay = document.getElementById('drawer-overlay');
+    const drawer = document.getElementById('drawer');
+    overlay.classList.remove('open');
+    drawer.classList.remove('open');
+    document.body.style.overflow = '';
+    setTimeout(() => { overlay.style.display = 'none'; }, 280);
+  }
+
+  // Close drawer on Escape
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeDrawer();
+  });
+
+  // ─── Notes (localStorage) ───
+  const notesArea = document.getElementById('notes-area');
+  const notesSaved = document.getElementById('notes-saved');
+
+  notesArea.value = localStorage.getItem('mc-notes') || '';
+
+  let saveTimer;
+  notesArea.addEventListener('input', () => {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+      localStorage.setItem('mc-notes', notesArea.value);
+      notesSaved.classList.add('show');
+      setTimeout(() => notesSaved.classList.remove('show'), 1800);
+    }, 600);
+  });
 </script>
 </body>
 </html>
