@@ -1682,38 +1682,408 @@
 </script>
     <!-- ═══ X ═══ -->
     <section class="page" id="page-x">
-      <div class="page-title">𝕏 Content</div>
-      <div class="card" style="margin-bottom:16px">
-        <div class="card-title">Feed</div>
-        <p style="color:var(--text2);font-size:13px;margin-bottom:16px">Your X/Twitter feed and content will appear here. Connect your account to enable live posts, mentions, and drafts.</p>
-        <div style="display:flex;gap:10px;flex-wrap:wrap">
-          <a href="https://x.com" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--border2);border-radius:8px;padding:8px 14px;color:var(--text);text-decoration:none;font-size:13px">𝕏 Open X.com</a>
+      <div class="page-title">𝕏 Content Engine</div>
+
+      <!-- Sub-tab nav -->
+      <div style="display:flex;gap:4px;margin-bottom:18px;border-bottom:1px solid var(--border);padding-bottom:0">
+        <button class="x-subtab x-subtab-active" onclick="switchXTab('generate')" id="xtab-generate">Generate</button>
+        <button class="x-subtab" onclick="switchXTab('style')" id="xtab-style">Your Style</button>
+        <button class="x-subtab" onclick="switchXTab('stats')" id="xtab-stats">Stats</button>
+        <button class="x-subtab" onclick="switchXTab('draft')" id="xtab-draft">Draft</button>
+      </div>
+
+      <!-- ── GENERATE ── -->
+      <div id="xpanel-generate">
+        <div class="card" style="margin-bottom:14px">
+          <div class="card-title" style="margin-bottom:10px">Topics that work for you</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
+            <button class="x-chip" onclick="setTopic('Bitcoin fundamentals & scarcity')">Bitcoin</button>
+            <button class="x-chip" onclick="setTopic('MSTR / Strategy mechanics')">MSTR / STRC</button>
+            <button class="x-chip" onclick="setTopic('Product & BitcoinQuant')">Product</button>
+            <button class="x-chip" onclick="setTopic('Crypto markets & macro')">Crypto Markets</button>
+            <button class="x-chip" onclick="setTopic('Bitcoin treasury companies')">Bitcoin Treasury</button>
+            <button class="x-chip" onclick="setTopic('Fiat debasement & monetary policy')">Fiat / Macro</button>
+            <button class="x-chip" onclick="setTopic('Gen Z & Bitcoin')">Gen Z + BTC</button>
+          </div>
+
+          <div style="display:flex;gap:8px;margin-bottom:12px">
+            <input id="x-topic-input" type="text" placeholder="Enter a topic or angle…" style="flex:1;background:var(--bg);border:1px solid var(--border2);border-radius:8px;padding:9px 12px;color:var(--text);font-size:13px;font-family:inherit;outline:none"/>
+            <button onclick="generateTweet()" style="background:var(--accent);border:none;border-radius:8px;padding:9px 18px;color:#fff;font-size:13px;cursor:pointer;white-space:nowrap;font-weight:600">Generate →</button>
+          </div>
+        </div>
+
+        <div class="card" id="x-gen-output-card" style="display:none;margin-bottom:14px">
+          <div class="card-title" style="margin-bottom:10px">Suggested Tweet</div>
+          <div id="x-gen-output" style="color:var(--text);font-size:14px;line-height:1.6;padding:14px;background:var(--bg);border-radius:8px;border:1px solid var(--border2);min-height:60px;white-space:pre-wrap"></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
+            <span id="x-gen-chars" style="font-size:12px;color:var(--text2)"></span>
+            <div style="display:flex;gap:8px">
+              <button onclick="generateTweet()" style="background:var(--bg);border:1px solid var(--border2);border-radius:6px;padding:7px 12px;color:var(--text);font-size:12px;cursor:pointer">↻ New</button>
+              <button id="x-gen-copy-btn" onclick="copyGenerated()" style="background:var(--accent);border:none;border-radius:6px;padding:7px 14px;color:#fff;font-size:12px;cursor:pointer">Copy</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="background:linear-gradient(135deg,rgba(247,147,26,0.08),transparent)">
+          <div class="card-title" style="margin-bottom:8px">💡 Hook bank</div>
+          <div style="color:var(--text2);font-size:12px;line-height:1.7">
+            <span style="color:var(--text)">Openers that have worked for you:</span><br>
+            • "HISTORY MADE."<br>
+            • "Someone bought 8,178 BTC this week. Not a government. Not Blackrock."<br>
+            • "I mean… what did people expect?"<br>
+            • "Just noticed something interesting in Strategy's 8-K from this morning."<br>
+            • "I hung out with two family members who are MDs at Citi and Goldman."<br>
+            • "Showed STRC to an old Chicago friend who doesn't care about Bitcoin or MSTR."<br>
+            • "The CFO who adds Bitcoin may look reckless today."<br>
+            • "Gold is for central banks. Bitcoin is for the people."
+          </div>
         </div>
       </div>
-      <div class="card" style="margin-bottom:16px">
-        <div class="card-title">Draft a Tweet</div>
-        <textarea id="x-draft" placeholder="What's happening?" style="width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:8px;padding:12px;color:var(--text);font-size:13px;font-family:inherit;resize:vertical;min-height:100px;outline:none;line-height:1.5"></textarea>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
-          <span id="x-char-count" style="font-size:12px;color:var(--text2)">0 / 280</span>
-          <button onclick="navigator.clipboard.writeText(document.getElementById('x-draft').value).then(()=>{this.textContent='Copied!';setTimeout(()=>this.textContent='Copy to Clipboard',2000)})" style="background:var(--accent);border:none;border-radius:6px;padding:7px 14px;color:#fff;font-size:12px;cursor:pointer">Copy to Clipboard</button>
+
+      <!-- ── YOUR STYLE ── -->
+      <div id="xpanel-style" style="display:none">
+        <div class="card" style="margin-bottom:14px">
+          <div class="card-title" style="margin-bottom:12px">What works for you</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div>
+              <div style="font-size:11px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">✓ Do this</div>
+              <ul style="color:var(--text2);font-size:12px;line-height:1.8;margin:0;padding-left:16px">
+                <li>Data-backed contrarian takes</li>
+                <li>Human analogies for complex finance</li>
+                <li>Bitcoin vs. Gold/fiat comparisons</li>
+                <li>Milestone announcements with real numbers</li>
+                <li>Sharp punchy closers</li>
+                <li>Personal authenticity (Bain → BTC)</li>
+                <li>Calling out bears with math, not emotion</li>
+                <li>Live commentary on ATM/8-K filings</li>
+              </ul>
+            </div>
+            <div>
+              <div style="font-size:11px;font-weight:600;color:#ef4444;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">✗ Skip this</div>
+              <ul style="color:var(--text2);font-size:12px;line-height:1.8;margin:0;padding-left:16px">
+                <li>Long threads without a killer opener</li>
+                <li>Vague inspiration without data</li>
+                <li>Price predictions or timing calls</li>
+                <li>GM / emoji-only posts</li>
+                <li>Starting with @ (replies die quietly)</li>
+                <li>Jargon without English translation</li>
+                <li>Asking questions without your view first</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:14px">
+          <div class="card-title" style="margin-bottom:4px">Top topics by performance</div>
+          <div style="color:var(--text2);font-size:12px;margin-bottom:12px">Ranked by average impressions on original posts</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <span style="font-size:13px;color:var(--text)">STRC mechanics (peg, Sharpe, ATM)</span>
+              <span style="font-size:11px;color:var(--accent);font-weight:600">🔥 Top</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <span style="font-size:13px;color:var(--text)">MSTR explainers (mNAV, premium)</span>
+              <span style="font-size:11px;color:var(--accent);font-weight:600">🔥 Top</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <span style="font-size:13px;color:var(--text)">Bitcoin vs everything (Gold, fiat)</span>
+              <span style="font-size:11px;color:#f59e0b;font-weight:600">Strong</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <span style="font-size:13px;color:var(--text)">Milestone announcements</span>
+              <span style="font-size:11px;color:#f59e0b;font-weight:600">Strong</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <span style="font-size:13px;color:var(--text)">Bear takedowns with math</span>
+              <span style="font-size:11px;color:#f59e0b;font-weight:600">Strong</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <span style="font-size:13px;color:var(--text)">Personal story (Bain, Miami, Gen Z)</span>
+              <span style="font-size:11px;color:var(--text2);font-weight:600">Good</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <span style="font-size:13px;color:var(--text)">BitcoinQuant product launches</span>
+              <span style="font-size:11px;color:var(--text2);font-weight:600">Good</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="margin-bottom:10px">🏆 Your top 5 posts</div>
+          <div id="x-top5" style="display:flex;flex-direction:column;gap:12px"></div>
         </div>
       </div>
-      <div class="card">
-        <div class="card-title">Saved Drafts</div>
-        <div id="x-drafts-list" style="color:var(--text2);font-size:13px">No saved drafts yet.</div>
-        <button onclick="saveXDraft()" style="margin-top:12px;background:var(--bg);border:1px solid var(--border2);border-radius:6px;padding:7px 14px;color:var(--text);font-size:12px;cursor:pointer">Save Draft</button>
+
+      <!-- ── STATS ── -->
+      <div id="xpanel-stats" style="display:none">
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:14px">
+          <div class="card" style="text-align:center">
+            <div style="font-size:26px;font-weight:700;color:var(--accent)">1,211</div>
+            <div style="font-size:11px;color:var(--text2);margin-top:4px;text-transform:uppercase;letter-spacing:0.5px">Total Tweets</div>
+          </div>
+          <div class="card" style="text-align:center">
+            <div style="font-size:26px;font-weight:700;color:var(--accent)">13,196</div>
+            <div style="font-size:11px;color:var(--text2);margin-top:4px;text-transform:uppercase;letter-spacing:0.5px">Avg Impressions<br><span style="font-size:10px">(original posts)</span></div>
+          </div>
+          <div class="card" style="text-align:center">
+            <div style="font-size:26px;font-weight:700;color:var(--accent)">5.39%</div>
+            <div style="font-size:11px;color:var(--text2);margin-top:4px;text-transform:uppercase;letter-spacing:0.5px">Avg Engagement Rate</div>
+          </div>
+          <div class="card" style="text-align:center">
+            <div style="font-size:26px;font-weight:700;color:var(--accent)">Jan 2026</div>
+            <div style="font-size:11px;color:var(--text2);margin-top:4px;text-transform:uppercase;letter-spacing:0.5px">Best Month<br><span style="font-size:10px">806K impressions</span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="margin-bottom:12px">🏆 Top 3 all-time posts</div>
+          <div id="x-stats-top3" style="display:flex;flex-direction:column;gap:14px"></div>
+        </div>
+      </div>
+
+      <!-- ── DRAFT ── -->
+      <div id="xpanel-draft" style="display:none">
+        <div class="card" style="margin-bottom:14px">
+          <div class="card-title" style="margin-bottom:10px">Draft a Tweet</div>
+          <textarea id="x-draft" placeholder="What's happening?" style="width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:8px;padding:12px;color:var(--text);font-size:13px;font-family:inherit;resize:vertical;min-height:120px;outline:none;line-height:1.6;box-sizing:border-box"></textarea>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+            <span id="x-char-count" style="font-size:12px;color:var(--text2)">0 / 280</span>
+            <div style="display:flex;gap:8px">
+              <button onclick="saveXDraft()" style="background:var(--bg);border:1px solid var(--border2);border-radius:6px;padding:7px 14px;color:var(--text);font-size:12px;cursor:pointer">Save</button>
+              <button onclick="navigator.clipboard.writeText(document.getElementById('x-draft').value).then(()=>{this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',2000)})" style="background:var(--accent);border:none;border-radius:6px;padding:7px 14px;color:#fff;font-size:12px;cursor:pointer">Copy</button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title" style="margin-bottom:10px">Saved Drafts</div>
+          <div id="x-drafts-list" style="color:var(--text2);font-size:13px">No saved drafts yet.</div>
+        </div>
       </div>
     </section>
 
+    <style>
+      .x-subtab {
+        background: none;
+        border: none;
+        border-bottom: 2px solid transparent;
+        padding: 8px 16px;
+        color: var(--text2);
+        font-size: 13px;
+        font-family: inherit;
+        cursor: pointer;
+        transition: color 0.15s, border-color 0.15s;
+        margin-bottom: -1px;
+      }
+      .x-subtab:hover { color: var(--text); }
+      .x-subtab-active {
+        color: var(--accent) !important;
+        border-bottom-color: var(--accent) !important;
+        font-weight: 600;
+      }
+      .x-chip {
+        background: var(--bg);
+        border: 1px solid var(--border2);
+        border-radius: 20px;
+        padding: 5px 12px;
+        color: var(--text2);
+        font-size: 12px;
+        font-family: inherit;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .x-chip:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: rgba(247,147,26,0.08);
+      }
+    </style>
+
     <script>
-      // X draft character count
+      // ─── Data from analysis ───
+      const CONTENT_IDEAS = [
+        "STRC has maintained a Sharpe ratio above 3 for consecutive days now. Most hedge funds never see Sharpe above 2. An 11.5% yielding preferred equity is running circles around the entire fixed income industry. Nobody's talking about it.",
+        "Gold just hit record highs. Every ounce of gold in the world is worth ~$18T. Bitcoin's market cap: $2T. If you think this story is over, you haven't been paying attention.",
+        "The CFO who adds Bitcoin to the balance sheet looks reckless today. The one who doesn't will look reckless in five years. Every major innovation in corporate finance looked irresponsible at first.",
+        "Most people treat volatility as a bug. Strategy treats it as the engine. High MSTR vol → premium exists → ATM works → more Bitcoin bought. The 'risk' is the mechanism.",
+        "JPMorgan launched Bitcoin-backed structured notes. Six months ago they were calling it speculative. The denial→fight→adoption arc is running on schedule.",
+        "There are 60 million millionaires on earth. There will only ever be 21 million Bitcoin. The math doesn't care about your opinion on cryptocurrency.",
+        "Bitcoin's supply schedule is published and unchangeable. Every central bank's printing schedule is decided in a conference room by 12 people. One of these is a stable system.",
+        "MSTR critics always focus on what happens if Bitcoin drops 90%. Nobody asks what happens if Bitcoin goes to $1M. Asymmetric upside with a convex structure. That's the whole point.",
+        "The spread between Bitcoin-backed yield (11.5% STRC) and Treasury yields (~4%) has never been wider relative to collateral quality. The market hasn't priced this in yet.",
+        "I left Bain to work in Bitcoin because I believed the opportunity was historic. STRC generating $1B+ in ATM proceeds in a single week wasn't in my base case. Still just getting started.",
+        "2% annual dilution means the supply doubles every 35 years. The difference between 'scarce' and 'finite' cannot be understated.",
+        "Bitcoin doesn't promise returns. It promises a set of transparent rules that CANNOT be compromised by any single entity. The returns are a byproduct of those rules.",
+        "The career risk for holding BTC on your balance sheet just went down a lot. The career risk for NOT holding it is going up.",
+        "STRC is a preferred stock that pays 11.5% yield. It also vacuums up Bitcoin supply daily. Both things can be true simultaneously. The world will catch on.",
+        "Gold is for central banks. Bitcoin is for the people.",
+        "Volatility creates attention. Attention creates curiosity. Curiosity forces understanding. Understanding creates conviction. Conviction creates adoption.",
+        "The scariest times to buy Bitcoin have historically been the best times to buy Bitcoin.",
+        "Bitcoin is a machine that converts time into value. Unplugging early is the only way to lose.",
+        "2018: $65k US debt per citizen. 2026: $114k US debt per citizen. Got Bitcoin?",
+        "Private credit 📉 Digital credit 📈"
+      ];
+
+      const TOPIC_IDEAS = {
+        "Bitcoin fundamentals & scarcity": [
+          "There are 60 million millionaires on earth. There will only ever be 21 million Bitcoin. The math doesn't care about your opinion on cryptocurrency.",
+          "Bitcoin's supply schedule is published and unchangeable. Every central bank's printing schedule is decided in a conference room by 12 people. One of these is a stable system.",
+          "Bitcoin doesn't promise returns. It promises a set of transparent rules that CANNOT be compromised by any single entity. The returns are a byproduct of those rules.",
+          "2% annual dilution means the supply doubles every 35 years. The difference between 'scarce' and 'finite' cannot be understated.",
+          "Bitcoin is a machine that converts time into value. Unplugging early is the only way to lose."
+        ],
+        "MSTR / Strategy mechanics": [
+          "Most people treat volatility as a bug. Strategy treats it as the engine. High MSTR vol → premium exists → ATM works → more Bitcoin bought. The 'risk' is the mechanism.",
+          "MSTR critics always focus on what happens if Bitcoin drops 90%. Nobody asks what happens if Bitcoin goes to $1M. Asymmetric upside with a convex structure. That's the whole point.",
+          "STRC has maintained a Sharpe ratio above 3 for consecutive days now. Most hedge funds never see Sharpe above 2. An 11.5% yielding preferred equity is running circles around the entire fixed income industry. Nobody's talking about it.",
+          "STRC is a preferred stock that pays 11.5% yield. It also vacuums up Bitcoin supply daily. Both things can be true simultaneously. The world will catch on.",
+          "The spread between Bitcoin-backed yield (11.5% STRC) and Treasury yields (~4%) has never been wider relative to collateral quality. The market hasn't priced this in yet."
+        ],
+        "Product & BitcoinQuant": [
+          "BitcoinQuant now tracks [X]. Bitcoin Treasury Twitter had a gap here. Sites showed holdings but missed the metrics that actually matter for valuation. We fixed that.",
+          "The most requested chart is finally live. MSTR's mNAV since the beginning of their BTC strategy. Context that changes everything.",
+          "If anyone believes the @bitcoinquant_ dashboard is missing useful information, let me know. Open to all feedback and criticism.",
+          "We built BitcoinQuant to make Bitcoin Treasury data accessible to everyone. Not just Bloomberg terminal subscribers.",
+          "Bitcoin is for everyone. BitcoinQuant is for everyone."
+        ],
+        "Crypto markets & macro": [
+          "Gold just hit record highs. Every ounce of gold in the world is worth ~$18T. Bitcoin's market cap: $2T. If you think this story is over, you haven't been paying attention.",
+          "JPMorgan launched Bitcoin-backed structured notes. Six months ago they were calling it speculative. The denial→fight→adoption arc is running on schedule.",
+          "2018: $65k US debt per citizen. 2026: $114k US debt per citizen. Got Bitcoin?",
+          "Private credit 📉 Digital credit 📈",
+          "The scariest times to buy Bitcoin have historically been the best times to buy Bitcoin."
+        ],
+        "Bitcoin treasury companies": [
+          "The CFO who adds Bitcoin to the balance sheet looks reckless today. The one who doesn't will look reckless in five years. Every major innovation in corporate finance looked irresponsible at first.",
+          "~5% of Bitcoin that will ever exist sits on corporate balance sheets. Supply is evaporating fast. Fade this digital gold rush at your own risk.",
+          "Every Bitcoin treasury allocation is coins moving from a 24/7 market to a multi-year vault. As more public companies join, freely tradable float keeps shrinking. Price will reflect that math eventually.",
+          "The career risk for holding BTC on your balance sheet just went down. The career risk for NOT holding it is going up.",
+          "5 yrs ago public companies held virtually zero Bitcoin. Today over $130B worth sits on corporate balance sheets. The paradigm has shifted. Corporate wave incoming 🌊"
+        ],
+        "Fiat / Macro": [
+          "The numerator (paycheck) went up a bit. The denominator (money supply) went up dramatically. Having 3 coins out of 10 total is more powerful than having 6 out of 50.",
+          "3 options the government has: 1. Pay back debt (math says no) 2. Default (politics say no) 3. Print baby print. They'll ride #3 longer than most think is possible. Own real assets.",
+          "Calling it the debasement 'trade' still misses the point. It's not arbitrage. This is the new normal. Fiat value will continue to melt. Scarce, durable assets are the lifeboat.",
+          "Gold is for central banks. Bitcoin is for the people.",
+          "AI abundance + money printing → digital scarcity becomes inevitable."
+        ],
+        "Gen Z + BTC": [
+          "I'm 24, and a lot of my friends think it's too late to buy Bitcoin. They see $100k+ and think they're priced out, instead of realizing how small Bitcoin's market cap still is compared to the global store-of-value TAM.",
+          "I left Bain to work in Bitcoin because I believed the opportunity was historic. STRC generating $1B+ in ATM proceeds in a single week wasn't in my base case. Still just getting started.",
+          "When I was at Bain, 'high impact' meant Millions or Billions. This is the first time in my career I've modeled a strategy where the base case is measured in Trillions.",
+          "Volatility creates attention. Attention creates curiosity. Curiosity forces understanding. Understanding creates conviction. Conviction creates adoption.",
+          "Bitcoin to protect wealth. AI to grow skills. X to build community. Anyone who doesn't use the tools available in this era is fighting an uphill battle."
+        ]
+      };
+
+      const TOP_5_POSTS = [
+        { text: "This is a big deal. You know that scene in The Big Short where Burry says, \"I may be early, but I'm not wrong,\" and the bank replies: \"It's the same thing, Mike.\"? Why is it the same thing? Duration mismatch. If your debt matures before your thesis plays out, you lose.", impressions: 290081, likes: 2177, engRate: "2.6%", date: "Jan 21, 2026" },
+        { text: "Bitcoin Treasury Twitter had a major gap. Sites showed BTC holdings, but none surfaced many key metrics needed to properly value these companies — volume, volatility, options data, market returns, and more. We built BitcoinQuant to close that gap 📊", impressions: 278279, likes: 1111, engRate: "6.2%", date: "Sep 24, 2025" },
+        { text: "Showed STRC to an old Chicago friend who doesn't care about Bitcoin or MSTR. But he wants better yield than his 4% money market without his principal bouncing around too much. Once he internalized the dividend cash reserve and the 720k BTC safety net, he was like gotcha yeah", impressions: 228581, likes: 1856, engRate: "2.4%", date: "Mar 3, 2026" },
+        { text: "HISTORY MADE. Strategy has officially shattered the 700,000 Bitcoin threshold.", impressions: 74414, likes: 3459, engRate: "7.6%", date: "Jan 20, 2026" },
+        { text: "650k BTC + $1.44B USD reserve. A balance sheet built for war.", impressions: 134146, likes: 2955, engRate: "4.9%", date: "Dec 1, 2025" }
+      ];
+
+      // ─── Sub-tab switching ───
+      function switchXTab(tab) {
+        ['generate','style','stats','draft'].forEach(t => {
+          document.getElementById('xpanel-'+t).style.display = t === tab ? '' : 'none';
+          document.getElementById('xtab-'+t).classList.toggle('x-subtab-active', t === tab);
+        });
+      }
+
+      // ─── Generate ───
+      let lastTopic = '';
+      let usedIdxForTopic = {};
+
+      function setTopic(topic) {
+        document.getElementById('x-topic-input').value = topic;
+      }
+
+      function generateTweet() {
+        const topic = document.getElementById('x-topic-input').value.trim();
+        let ideas;
+        if (topic && TOPIC_IDEAS[topic]) {
+          ideas = TOPIC_IDEAS[topic];
+        } else if (topic) {
+          // Find closest matching topic
+          const keys = Object.keys(TOPIC_IDEAS);
+          const match = keys.find(k => k.toLowerCase().includes(topic.toLowerCase().split(' ')[0]));
+          ideas = match ? TOPIC_IDEAS[match] : CONTENT_IDEAS;
+        } else {
+          ideas = CONTENT_IDEAS;
+        }
+
+        const key = topic || '__all__';
+        if (!usedIdxForTopic[key]) usedIdxForTopic[key] = [];
+        let available = ideas.map((_,i)=>i).filter(i => !usedIdxForTopic[key].includes(i));
+        if (!available.length) { usedIdxForTopic[key] = []; available = ideas.map((_,i)=>i); }
+        const idx = available[Math.floor(Math.random() * available.length)];
+        usedIdxForTopic[key].push(idx);
+
+        const tweet = ideas[idx];
+        document.getElementById('x-gen-output').textContent = tweet;
+        const chars = tweet.length;
+        const charEl = document.getElementById('x-gen-chars');
+        charEl.textContent = chars + ' / 280';
+        charEl.style.color = chars > 260 ? '#ef4444' : chars > 240 ? '#f59e0b' : 'var(--text2)';
+        document.getElementById('x-gen-output-card').style.display = '';
+      }
+
+      function copyGenerated() {
+        const text = document.getElementById('x-gen-output').textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          const btn = document.getElementById('x-gen-copy-btn');
+          btn.textContent = 'Copied!';
+          setTimeout(() => btn.textContent = 'Copy', 2000);
+        });
+      }
+
+      // ─── Style tab: top 5 posts ───
+      function renderTop5() {
+        const el = document.getElementById('x-top5');
+        if (!el) return;
+        el.innerHTML = TOP_5_POSTS.map(p => `
+          <div style="padding:12px;background:var(--bg);border-radius:8px;border:1px solid var(--border2)">
+            <div style="font-size:13px;color:var(--text);line-height:1.5;margin-bottom:8px">${p.text.substring(0,200)}${p.text.length>200?'…':''}</div>
+            <div style="display:flex;gap:12px;flex-wrap:wrap">
+              <span style="font-size:11px;color:var(--text2)">📅 ${p.date}</span>
+              <span style="font-size:11px;color:var(--text2)">👁 ${p.impressions.toLocaleString()} impr</span>
+              <span style="font-size:11px;color:var(--accent)">❤️ ${p.likes.toLocaleString()} likes</span>
+              <span style="font-size:11px;color:var(--text2)">📊 ${p.engRate} eng</span>
+            </div>
+          </div>`).join('');
+      }
+
+      // ─── Stats tab: top 3 ───
+      function renderTop3() {
+        const el = document.getElementById('x-stats-top3');
+        if (!el) return;
+        const top3 = TOP_5_POSTS.slice(0,3);
+        el.innerHTML = top3.map((p, i) => `
+          <div style="padding:12px;background:var(--bg);border-radius:8px;border:1px solid var(--border2)">
+            <div style="display:flex;align-items:flex-start;gap:10px">
+              <div style="font-size:20px;min-width:28px">${['🥇','🥈','🥉'][i]}</div>
+              <div style="flex:1">
+                <div style="font-size:13px;color:var(--text);line-height:1.5;margin-bottom:6px">${p.text.substring(0,160)}${p.text.length>160?'…':''}</div>
+                <div style="display:flex;gap:12px;flex-wrap:wrap">
+                  <span style="font-size:11px;color:var(--text2)">📅 ${p.date}</span>
+                  <span style="font-size:11px;color:var(--text2)">👁 ${p.impressions.toLocaleString()}</span>
+                  <span style="font-size:11px;color:var(--accent)">❤️ ${p.likes.toLocaleString()}</span>
+                  <span style="font-size:11px;color:var(--text2)">📊 ${p.engRate}</span>
+                </div>
+              </div>
+            </div>
+          </div>`).join('');
+      }
+
+      // ─── Draft tab ───
       const xDraft = document.getElementById('x-draft');
       const xCharCount = document.getElementById('x-char-count');
       if (xDraft) {
         xDraft.addEventListener('input', () => {
           const len = xDraft.value.length;
           xCharCount.textContent = len + ' / 280';
-          xCharCount.style.color = len > 260 ? 'var(--red)' : len > 240 ? 'var(--yellow)' : 'var(--text2)';
+          xCharCount.style.color = len > 260 ? '#ef4444' : len > 240 ? '#f59e0b' : 'var(--text2)';
         });
       }
 
@@ -1730,8 +2100,9 @@
 
       function renderXDrafts() {
         const list = document.getElementById('x-drafts-list');
+        if (!list) return;
         const drafts = JSON.parse(localStorage.getItem('x-drafts') || '[]');
-        if (!drafts.length) { list.innerHTML = 'No saved drafts yet.'; return; }
+        if (!drafts.length) { list.innerHTML = '<span style="color:var(--text2)">No saved drafts yet.</span>'; return; }
         list.innerHTML = drafts.map((d, i) => `
           <div style="padding:10px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:8px">
             <div>
@@ -1749,6 +2120,9 @@
         renderXDrafts();
       }
 
+      // ─── Init ───
+      renderTop5();
+      renderTop3();
       renderXDrafts();
     </script>
 </body>
