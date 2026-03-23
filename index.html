@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jimmy Mission Control</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0d0d;
+      --bg2: #141414;
+      --bg3: #1a1a1a;
+      --border: #242424;
+      --border2: #2e2e2e;
+      --accent: #7c6af7;
+      --accent-dim: rgba(124, 106, 247, 0.15);
+      --accent-hover: #9585f9;
+      --text: #e8e8e8;
+      --text2: #888;
+      --text3: #555;
+      --green: #22c55e;
+      --yellow: #eab308;
+      --red: #ef4444;
+      --sidebar-w: 220px;
+      --bottom-h: 60px;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      overflow: hidden;
+    }
+
+    /* ── Layout ── */
+    #app {
+      display: flex;
+      height: 100vh;
+    }
+
+    /* ── Sidebar (desktop) ── */
+    #sidebar {
+      width: var(--sidebar-w);
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 20px 0;
+      flex-shrink: 0;
+    }
+
+    .sidebar-logo {
+      padding: 0 18px 20px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+    }
+
+    .sidebar-logo h1 {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: 0.03em;
+    }
+
+    .sidebar-logo .subtitle {
+      font-size: 11px;
+      color: var(--text3);
+      margin-top: 2px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 18px;
+      cursor: pointer;
+      color: var(--text2);
+      font-size: 13.5px;
+      font-weight: 500;
+      border-radius: 0;
+      transition: all 0.12s;
+      border-left: 2px solid transparent;
+      user-select: none;
+    }
+
+    .nav-item:hover {
+      color: var(--text);
+      background: var(--bg3);
+    }
+
+    .nav-item.active {
+      color: var(--text);
+      background: var(--accent-dim);
+      border-left-color: var(--accent);
+    }
+
+    .nav-item .icon {
+      font-size: 16px;
+      width: 20px;
+      text-align: center;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding: 12px 18px;
+      border-top: 1px solid var(--border);
+      font-size: 11px;
+      color: var(--text3);
+    }
+
+    /* ── Main content ── */
+    #main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 28px 32px;
+    }
+
+    /* ── Bottom tabs (mobile) ── */
+    #bottom-tabs {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: var(--bottom-h);
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      z-index: 100;
+    }
+
+    .tabs-inner {
+      display: flex;
+      height: 100%;
+    }
+
+    .tab-btn {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      cursor: pointer;
+      color: var(--text3);
+      font-size: 10px;
+      font-weight: 500;
+      transition: color 0.12s;
+      user-select: none;
+    }
+
+    .tab-btn .icon { font-size: 18px; }
+    .tab-btn.active { color: var(--accent); }
+
+    /* ── Section pages ── */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    .page-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .page-sub {
+      color: var(--text2);
+      font-size: 13px;
+      margin-bottom: 28px;
+    }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 20px;
+      margin-bottom: 14px;
+    }
+
+    .card:last-child { margin-bottom: 0; }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .card-body {
+      color: var(--text2);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    /* ── Badges ── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .badge-yellow { background: rgba(234, 179, 8, 0.15); color: var(--yellow); }
+    .badge-green  { background: rgba(34, 197, 94, 0.15); color: var(--green); }
+    .badge-purple { background: var(--accent-dim); color: var(--accent); }
+    .badge-gray   { background: rgba(136,136,136,0.12); color: var(--text2); }
+
+    .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .dot-yellow { background: var(--yellow); }
+    .dot-green  { background: var(--green); }
+    .dot-purple { background: var(--accent); }
+    .dot-gray   { background: var(--text3); }
+
+    /* ── Grid ── */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    /* ── Activity feed ── */
+    .feed-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .feed-item:last-child { border-bottom: none; }
+
+    .feed-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      margin-top: 5px;
+      flex-shrink: 0;
+    }
+
+    .feed-content { flex: 1; }
+    .feed-title { font-size: 13px; font-weight: 500; color: var(--text); }
+    .feed-time  { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+    /* ── Bitcoin page ── */
+    .btc-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 20px;
+      text-align: center;
+      color: var(--text3);
+    }
+
+    .btc-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+      opacity: 0.4;
+    }
+
+    .coming-soon {
+      font-size: 12px;
+      color: var(--text3);
+      margin-top: 8px;
+      font-style: italic;
+    }
+
+    /* ── Links ── */
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover { color: var(--accent-hover); text-decoration: underline; }
+
+    .link-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 0;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      font-size: 13.5px;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      transition: color 0.12s;
+    }
+
+    .link-row:last-child { border-bottom: none; }
+    .link-row:hover { color: var(--accent); }
+    .link-row .link-icon { font-size: 20px; width: 28px; text-align: center; }
+    .link-row .link-arrow { margin-left: auto; color: var(--text3); }
+
+    /* ── Boats ── */
+    .boat-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .boat-item:last-child { border-bottom: none; }
+
+    .boat-num {
+      width: 26px; height: 26px;
+      border-radius: 6px;
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700;
+      color: var(--text2);
+      flex-shrink: 0;
+    }
+
+    .boat-info { flex: 1; }
+    .boat-name { font-size: 13px; font-weight: 600; }
+    .boat-meta { font-size: 12px; color: var(--text2); margin-top: 2px; }
+
+    .boat-price {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      text-align: right;
+    }
+
+    .boat-rating {
+      font-size: 11px;
+      color: var(--text3);
+      margin-top: 2px;
+      text-align: right;
+    }
+
+    .stars { color: #f59e0b; }
+
+    /* ── Stat cards ── */
+    .stat-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 20px;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .stat-sub {
+      font-size: 12px;
+      color: var(--text3);
+      margin-top: 4px;
+    }
+
+    /* ── Notice ── */
+    .notice {
+      background: var(--accent-dim);
+      border: 1px solid rgba(124,106,247,0.3);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 12.5px;
+      color: var(--accent-hover);
+      margin-bottom: 14px;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 680px) {
+      #sidebar { display: none; }
+      #bottom-tabs { display: flex; }
+
+      #main {
+        padding: 20px 16px;
+        padding-bottom: calc(var(--bottom-h) + 16px);
+      }
+
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+
+      .page-title { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ── Sidebar ── -->
+  <nav id="sidebar">
+    <div class="sidebar-logo">
+      <h1>Mission Control</h1>
+      <div class="subtitle">Rohan Hirani · Miami</div>
+    </div>
+
+    <div class="nav-item active" data-page="now">
+      <span class="icon">⚡</span> Now
+    </div>
+    <div class="nav-item" data-page="bitcoin">
+      <span class="icon">₿</span> Bitcoin
+    </div>
+    <div class="nav-item" data-page="boats">
+      <span class="icon">⛵</span> Boats
+    </div>
+    <div class="nav-item" data-page="tools">
+      <span class="icon">🔧</span> Tools
+    </div>
+
+    <div class="sidebar-footer">
+      Jimmy OpenClaw · v1.0
+    </div>
+  </nav>
+
+  <!-- ── Main ── -->
+  <main id="main">
+
+    <!-- NOW -->
+    <section class="page active" id="page-now">
+      <div class="page-title">Now</div>
+      <div class="page-sub">Active projects and status as of March 2026</div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">⛵ Boat Trip · Apr 18</div>
+            <span class="badge badge-yellow"><span class="dot dot-yellow"></span> Waiting</span>
+          </div>
+          <div class="card-body">
+            Group of 10 · 4 inquiries sent on GetMyBoat.<br/>
+            Awaiting responses from captains.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">🏢 Strategy Interview</div>
+            <span class="badge badge-purple"><span class="dot dot-purple"></span> Active</span>
+          </div>
+          <div class="card-body">
+            Treasury Associate · Bitcoin team.<br/>
+            Prepping OpenClaw demos + BTC concepts.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">💼 CROBO Launch</div>
+            <span class="badge badge-purple"><span class="dot dot-purple"></span> Building</span>
+          </div>
+          <div class="card-body">
+            Earn / yield on idle cash via STRC.<br/>
+            Head of Product — core priority.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">📊 bitcoinquant.co</div>
+            <span class="badge badge-green"><span class="dot dot-green"></span> Live</span>
+          </div>
+          <div class="card-body">
+            Tracking BTC Treasury companies &amp; preferred equity issuances.
+          </div>
+        </div>
+      </div>
+
+      <!-- Activity feed -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Recent Activity</div>
+          <span class="badge badge-gray">Today</span>
+        </div>
+        <div>
+          <div class="feed-item">
+            <div class="feed-dot" style="background:var(--accent)"></div>
+            <div class="feed-content">
+              <div class="feed-title">Mission Control dashboard deployed</div>
+              <div class="feed-time">March 22, 2026 · 8:00 PM EDT</div>
+            </div>
+          </div>
+          <div class="feed-item">
+            <div class="feed-dot" style="background:var(--yellow)"></div>
+            <div class="feed-content">
+              <div class="feed-title">4 boat inquiries sent on GetMyBoat for Apr 18</div>
+              <div class="feed-time">March 22, 2026 · Earlier today</div>
+            </div>
+          </div>
+          <div class="feed-item">
+            <div class="feed-dot" style="background:var(--green)"></div>
+            <div class="feed-content">
+              <div class="feed-title">OpenClaw set up · first session with Jimmy</div>
+              <div class="feed-time">March 22, 2026 · First session</div>
+            </div>
+          </div>
+          <div class="feed-item">
+            <div class="feed-dot" style="background:var(--text3)"></div>
+            <div class="feed-content">
+              <div class="feed-title">Strategy interview scheduled · Bitcoin team</div>
+              <div class="feed-time">Coming up · Prepping now</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BITCOIN -->
+    <section class="page" id="page-bitcoin">
+      <div class="page-title">Bitcoin</div>
+      <div class="page-sub">Treasury companies &amp; preferred equity tracker</div>
+
+      <div class="grid-2">
+        <div class="stat-card">
+          <div class="stat-label">BTC Price</div>
+          <div class="stat-value">—</div>
+          <div class="stat-sub coming-soon">Live data coming soon</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">MSTR Price</div>
+          <div class="stat-value">—</div>
+          <div class="stat-sub coming-soon">Live data coming soon</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">STRC · MicroStrategy Preferred Equity</div>
+          <span class="badge badge-purple">CROBO Underlying</span>
+        </div>
+        <div class="card-body">
+          STRC is the preferred equity instrument issued by MicroStrategy (Strategy).<br/>
+          CROBO uses it to offer earn / yield on idle cash for retail investors.<br/><br/>
+          <span class="coming-soon">Live STRC data coming soon</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🔗 Links</div>
+        </div>
+        <a href="https://bitcoinquant.co" target="_blank" class="link-row">
+          <span class="link-icon">📊</span> bitcoinquant.co
+          <span class="link-arrow">↗</span>
+        </a>
+        <a href="https://www.microstrategy.com" target="_blank" class="link-row">
+          <span class="link-icon">🏢</span> MicroStrategy.com
+          <span class="link-arrow">↗</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- BOATS -->
+    <section class="page" id="page-boats">
+      <div class="page-title">Boats</div>
+      <div class="page-sub">April 18 Charter · Miami</div>
+
+      <div class="notice">
+        📬 4 inquiries sent · Awaiting captain responses
+      </div>
+
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-header">
+          <div class="card-title">Trip Details</div>
+          <span class="badge badge-yellow"><span class="dot dot-yellow"></span> Pending</span>
+        </div>
+        <div class="card-body">
+          <strong>Date:</strong> April 18, 2026<br/>
+          <strong>Group:</strong> ~10 people (possibly 20 → 2 boats)<br/>
+          <strong>Platform:</strong> GetMyBoat<br/>
+          <strong>Plan:</strong> Leaning toward booking 2 boats for 20 people
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">⛵ Inquiries Sent</div>
+        </div>
+
+        <div class="boat-item">
+          <div class="boat-num">1</div>
+          <div class="boat-info">
+            <div class="boat-name">Luxury Catamaran · 45ft</div>
+            <div class="boat-meta">Up to 12 guests · Captain included</div>
+          </div>
+          <div>
+            <div class="boat-price">~$1,200</div>
+            <div class="boat-rating"><span class="stars">★★★★★</span> 4.9</div>
+          </div>
+        </div>
+
+        <div class="boat-item">
+          <div class="boat-num">2</div>
+          <div class="boat-info">
+            <div class="boat-name">Speedboat · 38ft</div>
+            <div class="boat-meta">Up to 10 guests · Fuel included</div>
+          </div>
+          <div>
+            <div class="boat-price">~$950</div>
+            <div class="boat-rating"><span class="stars">★★★★★</span> 4.8</div>
+          </div>
+        </div>
+
+        <div class="boat-item">
+          <div class="boat-num">3</div>
+          <div class="boat-info">
+            <div class="boat-name">Party Pontoon · 30ft</div>
+            <div class="boat-meta">Up to 15 guests · Bluetooth audio</div>
+          </div>
+          <div>
+            <div class="boat-price">~$750</div>
+            <div class="boat-rating"><span class="stars">★★★★</span> 4.6</div>
+          </div>
+        </div>
+
+        <div class="boat-item">
+          <div class="boat-num">4</div>
+          <div class="boat-info">
+            <div class="boat-name">Center Console · 32ft</div>
+            <div class="boat-meta">Up to 8 guests · Fishing-friendly</div>
+          </div>
+          <div>
+            <div class="boat-price">~$800</div>
+            <div class="boat-rating"><span class="stars">★★★★</span> 4.7</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:14px">
+        <a href="https://gorgeous-loan-b3a.notion.site/Miami-Boat-Charter-April-18-Group-of-10-32b4844cc0758153bf15f1b891469137"
+           target="_blank" class="link-row" style="padding:14px 0; border-top: 1px solid var(--border);">
+          <span class="link-icon">📄</span> Open Notion Planning Doc
+          <span class="link-arrow">↗</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- TOOLS -->
+    <section class="page" id="page-tools">
+      <div class="page-title">Tools</div>
+      <div class="page-sub">Quick links to your stack</div>
+
+      <div class="card">
+        <a href="https://github.com/jimmyclaw7" target="_blank" class="link-row">
+          <span class="link-icon">🐙</span> GitHub
+          <span class="link-arrow">↗</span>
+        </a>
+        <a href="https://notion.so" target="_blank" class="link-row">
+          <span class="link-icon">📝</span> Notion
+          <span class="link-arrow">↗</span>
+        </a>
+        <a href="https://docs.google.com/spreadsheets" target="_blank" class="link-row">
+          <span class="link-icon">📊</span> Google Sheets
+          <span class="link-arrow">↗</span>
+        </a>
+        <a href="https://vercel.com/dashboard" target="_blank" class="link-row">
+          <span class="link-icon">▲</span> Vercel
+          <span class="link-arrow">↗</span>
+        </a>
+        <a href="https://www.getmyboat.com/en/messages/" target="_blank" class="link-row">
+          <span class="link-icon">⛵</span> GetMyBoat Inbox
+          <span class="link-arrow">↗</span>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── Bottom tabs (mobile) ── -->
+  <div id="bottom-tabs">
+    <div class="tabs-inner">
+      <div class="tab-btn active" data-page="now">
+        <span class="icon">⚡</span>
+        <span>Now</span>
+      </div>
+      <div class="tab-btn" data-page="bitcoin">
+        <span class="icon">₿</span>
+        <span>Bitcoin</span>
+      </div>
+      <div class="tab-btn" data-page="boats">
+        <span class="icon">⛵</span>
+        <span>Boats</span>
+      </div>
+      <div class="tab-btn" data-page="tools">
+        <span class="icon">🔧</span>
+        <span>Tools</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const pages = document.querySelectorAll('.page');
+  const navItems = document.querySelectorAll('.nav-item');
+  const tabBtns = document.querySelectorAll('.tab-btn');
+
+  function activate(pageId) {
+    pages.forEach(p => p.classList.toggle('active', p.id === 'page-' + pageId));
+    navItems.forEach(n => n.classList.toggle('active', n.dataset.page === pageId));
+    tabBtns.forEach(t => t.classList.toggle('active', t.dataset.page === pageId));
+  }
+
+  navItems.forEach(n => n.addEventListener('click', () => activate(n.dataset.page)));
+  tabBtns.forEach(t => t.addEventListener('click', () => activate(t.dataset.page)));
+</script>
+</body>
+</html>
