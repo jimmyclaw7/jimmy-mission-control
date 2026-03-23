@@ -226,6 +226,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      flex-shrink: 0;
     }
 
     .drawer-header h2 {
@@ -253,6 +254,7 @@
       flex: 1;
       padding: 12px 0;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     .drawer-nav-item {
@@ -292,6 +294,7 @@
       border-top: 1px solid var(--border);
       font-size: 11px;
       color: var(--text3);
+      flex-shrink: 0;
     }
 
     /* ─── Main content ─── */
@@ -451,6 +454,13 @@
       margin-bottom: 14px;
     }
 
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
     /* ─── Activity feed ─── */
     .feed-item {
       display: flex;
@@ -565,6 +575,31 @@
       line-height: 1;
     }
 
+    /* ─── Big link button ─── */
+    .big-link-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 16px 20px;
+      background: var(--accent-dim);
+      border: 1px solid rgba(124,106,247,0.3);
+      border-radius: 10px;
+      color: var(--accent-hover);
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.15s;
+      margin-bottom: 14px;
+    }
+
+    .big-link-btn:hover {
+      background: rgba(124,106,247,0.2);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
     /* ─── Boats ─── */
     .progress-wrap {
       background: var(--bg3);
@@ -656,9 +691,9 @@
     .stars { color: #f59e0b; }
 
     /* ─── Notes ─── */
-    #notes-area {
+    #notes-area, #crobo-notes-area {
       width: 100%;
-      min-height: 300px;
+      min-height: 260px;
       background: var(--bg3);
       border: 1px solid var(--border);
       border-radius: 10px;
@@ -672,7 +707,7 @@
       transition: border-color 0.15s;
     }
 
-    #notes-area:focus {
+    #notes-area:focus, #crobo-notes-area:focus {
       border-color: var(--accent);
     }
 
@@ -692,6 +727,188 @@
     }
 
     .notes-saved.show { opacity: 1; }
+
+    /* ─── Tasks ─── */
+    .task-input-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    #task-input {
+      flex: 1;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 13.5px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    #task-input:focus { border-color: var(--accent); }
+    #task-input::placeholder { color: var(--text3); }
+
+    .btn {
+      padding: 10px 16px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn:hover { background: var(--accent-hover); }
+
+    .btn-ghost {
+      padding: 8px 14px;
+      background: transparent;
+      color: var(--text3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-ghost:hover { color: var(--text); border-color: var(--border2); }
+
+    #tasks-list {
+      list-style: none;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      transition: opacity 0.2s;
+    }
+
+    .task-item:last-child { border-bottom: none; }
+
+    .task-item input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--accent);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .task-item label {
+      flex: 1;
+      font-size: 13.5px;
+      color: var(--text);
+      cursor: pointer;
+      line-height: 1.4;
+    }
+
+    .task-item.completed label {
+      text-decoration: line-through;
+      color: var(--text3);
+    }
+
+    .task-delete {
+      color: var(--text3);
+      cursor: pointer;
+      font-size: 16px;
+      padding: 2px 4px;
+      border-radius: 4px;
+      transition: all 0.12s;
+      line-height: 1;
+    }
+
+    .task-delete:hover { color: var(--red); background: rgba(239,68,68,0.1); }
+
+    .tasks-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .tasks-count {
+      font-size: 12px;
+      color: var(--text3);
+    }
+
+    /* ─── Meal Plan ─── */
+    .meal-table-wrap {
+      overflow-x: auto;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      margin-bottom: 14px;
+    }
+
+    .meal-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 480px;
+    }
+
+    .meal-table th {
+      background: var(--bg2);
+      padding: 10px 14px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text3);
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .meal-table td {
+      border-bottom: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    .meal-table td:last-child { border-right: none; }
+    .meal-table tr:last-child td { border-bottom: none; }
+
+    .meal-table td.day-label {
+      padding: 12px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text2);
+      background: var(--bg2);
+      white-space: nowrap;
+      vertical-align: middle;
+      min-width: 70px;
+    }
+
+    .meal-cell {
+      min-height: 52px;
+      padding: 10px 12px;
+      font-size: 13px;
+      color: var(--text);
+      outline: none;
+      background: var(--bg3);
+      line-height: 1.4;
+      transition: background 0.12s;
+      cursor: text;
+    }
+
+    .meal-cell:empty::before {
+      content: attr(data-placeholder);
+      color: var(--text3);
+      pointer-events: none;
+    }
+
+    .meal-cell:focus {
+      background: #1e1e1e;
+    }
 
     /* ─── Misc ─── */
     .notice {
@@ -724,7 +941,7 @@
         padding-top: calc(56px + 20px);
       }
 
-      .grid-2 {
+      .grid-2, .grid-3 {
         grid-template-columns: 1fr;
       }
 
@@ -745,13 +962,22 @@
 
     <div class="nav-section">
       <div class="nav-item active" data-page="now">
-        <span class="icon">⚡</span> Now
+        <span class="icon">🏠</span> Now
       </div>
-      <div class="nav-item" data-page="research">
-        <span class="icon">₿</span> Research
+      <div class="nav-item" data-page="tasks">
+        <span class="icon">✅</span> Tasks
       </div>
-      <div class="nav-item" data-page="boats">
-        <span class="icon">⛵</span> Boats
+      <div class="nav-item" data-page="crobo">
+        <span class="icon">🏦</span> CROBO
+      </div>
+      <div class="nav-item" data-page="bitcoinquant">
+        <span class="icon">📊</span> BitcoinQuant
+      </div>
+      <div class="nav-item" data-page="miami">
+        <span class="icon">🌴</span> Miami Trip
+      </div>
+      <div class="nav-item" data-page="mealplan">
+        <span class="icon">🍽️</span> Meal Plan
       </div>
       <div class="nav-item" data-page="links">
         <span class="icon">🔗</span> Links
@@ -784,13 +1010,22 @@
     </div>
     <div class="drawer-nav">
       <div class="drawer-nav-item active" data-page="now">
-        <span class="icon">⚡</span> Now
+        <span class="icon">🏠</span> Now
       </div>
-      <div class="drawer-nav-item" data-page="research">
-        <span class="icon">₿</span> Research
+      <div class="drawer-nav-item" data-page="tasks">
+        <span class="icon">✅</span> Tasks
       </div>
-      <div class="drawer-nav-item" data-page="boats">
-        <span class="icon">⛵</span> Boats
+      <div class="drawer-nav-item" data-page="crobo">
+        <span class="icon">🏦</span> CROBO
+      </div>
+      <div class="drawer-nav-item" data-page="bitcoinquant">
+        <span class="icon">📊</span> BitcoinQuant
+      </div>
+      <div class="drawer-nav-item" data-page="miami">
+        <span class="icon">🌴</span> Miami Trip
+      </div>
+      <div class="drawer-nav-item" data-page="mealplan">
+        <span class="icon">🍽️</span> Meal Plan
       </div>
       <div class="drawer-nav-item" data-page="links">
         <span class="icon">🔗</span> Links
@@ -831,11 +1066,11 @@
 
       <div class="priority-card yellow">
         <div class="priority-card-header">
-          <div class="priority-card-title">🚢 Boat Trip · April 18</div>
+          <div class="priority-card-title">🌴 Miami Trip · April 18</div>
           <span class="badge badge-yellow"><span class="dot dot-yellow"></span> Waiting</span>
         </div>
         <div class="priority-card-body">
-          4 inquiries sent on GetMyBoat, awaiting captain responses. Group of ~10 people.
+          4 inquiries sent on GetMyBoat, awaiting captain responses. Group of 20 people total.
         </div>
       </div>
 
@@ -865,7 +1100,7 @@
         <div class="feed-item">
           <div class="feed-dot" style="background:var(--accent)"></div>
           <div class="feed-content">
-            <div class="feed-title">Mission Control v2 deployed — mobile redesign</div>
+            <div class="feed-title">Mission Control v3 deployed — 8-tab overhaul</div>
             <div class="feed-time">March 22, 2026 · Tonight</div>
           </div>
         </div>
@@ -893,21 +1128,102 @@
       </div>
     </section>
 
-    <!-- ═══ RESEARCH ═══ -->
-    <section class="page" id="page-research">
-      <div class="page-title">Research</div>
-      <div class="page-sub">Bitcoin treasury companies &amp; preferred equity</div>
+    <!-- ═══ TASKS ═══ -->
+    <section class="page" id="page-tasks">
+      <div class="page-title">Tasks</div>
+      <div class="page-sub">What needs to get done</div>
 
-      <div class="grid-2">
+      <div class="task-input-row">
+        <input type="text" id="task-input" placeholder="Add a new task..." />
+        <button class="btn" onclick="addTask()">+ Add</button>
+      </div>
+
+      <div class="card" style="padding: 0;">
+        <div class="tasks-actions" style="padding: 12px 16px 0;">
+          <span class="tasks-count" id="tasks-count">0 remaining</span>
+          <button class="btn-ghost" onclick="clearCompleted()">Clear completed</button>
+        </div>
+        <ul id="tasks-list"></ul>
+      </div>
+    </section>
+
+    <!-- ═══ CROBO ═══ -->
+    <section class="page" id="page-crobo">
+      <div class="page-title">CROBO</div>
+      <div class="page-sub">Head of Product</div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">About CROBO</div>
+          <span class="badge badge-purple">FinTech</span>
+        </div>
+        <div class="card-body">
+          Building an earn/yield/idle cash investment program using MicroStrategy STRC preferred equity as the underlying instrument. Retail investors earn yield on idle cash without direct crypto exposure.
+        </div>
+      </div>
+
+      <div class="priority-card yellow">
+        <div class="priority-card-header">
+          <div class="priority-card-title">🚀 Launch Status: In Progress</div>
+          <span class="badge badge-yellow"><span class="dot dot-yellow"></span> Active</span>
+        </div>
+        <div class="priority-card-body">
+          Product development ongoing. STRC yield product in build phase. Target: retail earn/yield on idle cash.
+        </div>
+      </div>
+
+      <div class="section-heading">Quick Links</div>
+      <div class="card">
+        <a href="#" class="link-row">
+          <span class="link-icon">🛠️</span> Internal Dashboard (placeholder)
+          <span class="link-arrow">↗</span>
+        </a>
+        <a href="#" class="link-row">
+          <span class="link-icon">📋</span> Product Roadmap (placeholder)
+          <span class="link-arrow">↗</span>
+        </a>
+        <a href="#" class="link-row">
+          <span class="link-icon">📊</span> Analytics (placeholder)
+          <span class="link-arrow">↗</span>
+        </a>
+        <a href="https://www.microstrategy.com" target="_blank" class="link-row">
+          <span class="link-icon">🏢</span> MicroStrategy / STRC
+          <span class="link-arrow">↗</span>
+        </a>
+      </div>
+
+      <div class="section-heading">CROBO Notes</div>
+      <textarea id="crobo-notes-area" placeholder="CROBO product notes, decisions, context..."></textarea>
+      <div class="notes-footer">
+        <span>Auto-saves to local storage</span>
+        <span id="crobo-notes-saved" class="notes-saved">✓ Saved</span>
+      </div>
+    </section>
+
+    <!-- ═══ BITCOINQUANT ═══ -->
+    <section class="page" id="page-bitcoinquant">
+      <div class="page-title">bitcoinquant.co</div>
+      <div class="page-sub">Tracks Bitcoin Treasury companies and their preferred equity issuances</div>
+
+      <a href="https://bitcoinquant.co" target="_blank" class="big-link-btn">
+        📊 Open bitcoinquant.co ↗
+      </a>
+
+      <div class="grid-3">
         <div class="stat-card">
           <div class="stat-label">BTC Price</div>
           <div class="stat-value">—</div>
-          <div class="stat-sub">Tap to refresh · live data coming soon</div>
+          <div class="stat-sub">Live data coming soon</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">MSTR · MicroStrategy</div>
+          <div class="stat-label">MSTR</div>
           <div class="stat-value">—</div>
-          <div class="stat-sub">Tap to refresh · live data coming soon</div>
+          <div class="stat-sub">MicroStrategy</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">STRC</div>
+          <div class="stat-value">—</div>
+          <div class="stat-sub">Preferred equity</div>
         </div>
       </div>
 
@@ -917,8 +1233,7 @@
           <span class="badge badge-purple">CROBO Underlying</span>
         </div>
         <div class="card-body">
-          STRC is the preferred equity instrument issued by Strategy (MicroStrategy). CROBO uses it to offer earn / yield on idle cash for retail investors.<br/><br/>
-          <span style="font-size:11px; color:var(--text3); font-style:italic;">Live STRC data coming soon</span>
+          STRC is the preferred equity instrument issued by Strategy (MicroStrategy). CROBO uses it to offer earn / yield on idle cash for retail investors.
         </div>
       </div>
 
@@ -932,24 +1247,21 @@
           <span class="link-icon">🏢</span> MicroStrategy.com
           <span class="link-arrow">↗</span>
         </a>
+        <a href="https://metaplanet.jp" target="_blank" class="link-row">
+          <span class="link-icon">🗾</span> Metaplanet
+          <span class="link-arrow">↗</span>
+        </a>
         <a href="https://gorgeous-loan-b3a.notion.site/" target="_blank" class="link-row">
           <span class="link-icon">📄</span> Strategy Interview Prep
           <span class="link-arrow">↗</span>
         </a>
       </div>
-
-      <div class="section-heading">Recent News</div>
-      <div class="card">
-        <div class="card-body" style="text-align:center; padding:16px 0; color:var(--text3); font-style:italic;">
-          News feed coming soon
-        </div>
-      </div>
     </section>
 
-    <!-- ═══ BOATS ═══ -->
-    <section class="page" id="page-boats">
-      <div class="page-title">Boats</div>
-      <div class="page-sub">April 18 Charter · Miami</div>
+    <!-- ═══ MIAMI TRIP ═══ -->
+    <section class="page" id="page-miami">
+      <div class="page-title">Miami Trip</div>
+      <div class="page-sub">April 18, 2026 · Boat Charter</div>
 
       <div class="progress-wrap">
         <div class="progress-label">Step 3 of 4 — Awaiting Responses</div>
@@ -971,9 +1283,20 @@
         </div>
         <div class="card-body">
           <strong style="color:var(--text)">Date:</strong> April 18, 2026<br/>
-          <strong style="color:var(--text)">Group:</strong> ~10 people (possibly 20 → 2 boats)<br/>
           <strong style="color:var(--text)">Platform:</strong> GetMyBoat<br/>
           <strong style="color:var(--text)">Plan:</strong> Leaning toward booking 2 boats for 20 people
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-header">
+          <div class="card-title">🌊 The Crew</div>
+          <span class="badge badge-green">20 Total</span>
+        </div>
+        <div class="card-body">
+          <strong style="color:var(--text)">Your group:</strong> 10 people<br/>
+          <strong style="color:var(--text)">Her group:</strong> 10 people<br/>
+          <strong style="color:var(--text)">Total:</strong> 20 people · likely 2 boats
         </div>
       </div>
 
@@ -1046,6 +1369,36 @@
       </div>
     </section>
 
+    <!-- ═══ MEAL PLAN ═══ -->
+    <section class="page" id="page-mealplan">
+      <div class="page-title">Miami Meal Plan</div>
+      <div class="page-sub">Weekly planner · editable cells · saves automatically</div>
+
+      <div class="meal-table-wrap">
+        <table class="meal-table">
+          <thead>
+            <tr>
+              <th style="width:80px">Day</th>
+              <th>Breakfast</th>
+              <th>Lunch</th>
+              <th>Dinner</th>
+            </tr>
+          </thead>
+          <tbody id="meal-tbody">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <div style="display:flex; justify-content:flex-end; margin-top:4px;">
+        <button class="btn-ghost" onclick="clearMealPlan()">Clear all</button>
+      </div>
+      <div class="notes-footer" style="margin-top:8px;">
+        <span>Cells auto-save to local storage</span>
+        <span id="meal-saved" class="notes-saved">✓ Saved</span>
+      </div>
+    </section>
+
     <!-- ═══ LINKS ═══ -->
     <section class="page" id="page-links">
       <div class="page-title">Links</div>
@@ -1114,18 +1467,13 @@
   const drawerItems = document.querySelectorAll('.drawer-nav-item');
 
   function activate(pageId) {
-    pages.forEach(p => {
-      p.classList.remove('active', 'fade-in');
-    });
+    pages.forEach(p => p.classList.remove('active', 'fade-in'));
     navItems.forEach(n => n.classList.toggle('active', n.dataset.page === pageId));
     drawerItems.forEach(d => d.classList.toggle('active', d.dataset.page === pageId));
-
     const target = document.getElementById('page-' + pageId);
     if (target) {
       target.classList.add('active');
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => target.classList.add('fade-in'));
-      });
+      requestAnimationFrame(() => requestAnimationFrame(() => target.classList.add('fade-in')));
     }
   }
 
@@ -1135,12 +1483,9 @@
     closeDrawer();
   }));
 
-  // Fade in current page on load
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      document.querySelector('.page.active')?.classList.add('fade-in');
-    });
-  });
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    document.querySelector('.page.active')?.classList.add('fade-in');
+  }));
 
   // ─── Drawer ───
   function openDrawer() {
@@ -1163,17 +1508,12 @@
     setTimeout(() => { overlay.style.display = 'none'; }, 280);
   }
 
-  // Close drawer on Escape
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') closeDrawer();
-  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
 
   // ─── Notes (localStorage) ───
   const notesArea = document.getElementById('notes-area');
   const notesSaved = document.getElementById('notes-saved');
-
   notesArea.value = localStorage.getItem('mc-notes') || '';
-
   let saveTimer;
   notesArea.addEventListener('input', () => {
     clearTimeout(saveTimer);
@@ -1183,6 +1523,156 @@
       setTimeout(() => notesSaved.classList.remove('show'), 1800);
     }, 600);
   });
+
+  // ─── CROBO Notes (localStorage) ───
+  const croboNotesArea = document.getElementById('crobo-notes-area');
+  const croboNotesSaved = document.getElementById('crobo-notes-saved');
+  croboNotesArea.value = localStorage.getItem('mc-crobo-notes') || '';
+  let croboSaveTimer;
+  croboNotesArea.addEventListener('input', () => {
+    clearTimeout(croboSaveTimer);
+    croboSaveTimer = setTimeout(() => {
+      localStorage.setItem('mc-crobo-notes', croboNotesArea.value);
+      croboNotesSaved.classList.add('show');
+      setTimeout(() => croboNotesSaved.classList.remove('show'), 1800);
+    }, 600);
+  });
+
+  // ─── Tasks ───
+  const DEFAULT_TASKS = [
+    { id: Date.now() + 1, text: 'Book boat for April 18', done: false },
+    { id: Date.now() + 2, text: 'Prep for Strategy interview', done: false },
+    { id: Date.now() + 3, text: 'Review STRC product specs with CROBO team', done: false },
+  ];
+
+  function loadTasks() {
+    const stored = localStorage.getItem('mc-tasks');
+    if (stored) {
+      try { return JSON.parse(stored); } catch(e) {}
+    }
+    return DEFAULT_TASKS;
+  }
+
+  function saveTasks(tasks) {
+    localStorage.setItem('mc-tasks', JSON.stringify(tasks));
+  }
+
+  function renderTasks() {
+    let tasks = loadTasks();
+    // Sort: incomplete first, completed last
+    tasks.sort((a, b) => (a.done === b.done) ? 0 : a.done ? 1 : -1);
+    const list = document.getElementById('tasks-list');
+    const countEl = document.getElementById('tasks-count');
+    list.innerHTML = '';
+    const remaining = tasks.filter(t => !t.done).length;
+    countEl.textContent = remaining + ' remaining';
+
+    tasks.forEach(task => {
+      const li = document.createElement('li');
+      li.className = 'task-item' + (task.done ? ' completed' : '');
+      const cbId = 'task-cb-' + task.id;
+      li.innerHTML = `
+        <input type="checkbox" id="${cbId}" ${task.done ? 'checked' : ''}/>
+        <label for="${cbId}">${escapeHtml(task.text)}</label>
+        <span class="task-delete" data-id="${task.id}" title="Delete">✕</span>
+      `;
+      li.querySelector('input').addEventListener('change', () => toggleTask(task.id));
+      li.querySelector('.task-delete').addEventListener('click', () => deleteTask(task.id));
+      list.appendChild(li);
+    });
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function addTask() {
+    const input = document.getElementById('task-input');
+    const text = input.value.trim();
+    if (!text) return;
+    const tasks = loadTasks();
+    tasks.push({ id: Date.now(), text, done: false });
+    saveTasks(tasks);
+    input.value = '';
+    renderTasks();
+  }
+
+  function toggleTask(id) {
+    const tasks = loadTasks();
+    const t = tasks.find(t => t.id === id);
+    if (t) t.done = !t.done;
+    saveTasks(tasks);
+    renderTasks();
+  }
+
+  function deleteTask(id) {
+    const tasks = loadTasks().filter(t => t.id !== id);
+    saveTasks(tasks);
+    renderTasks();
+  }
+
+  function clearCompleted() {
+    const tasks = loadTasks().filter(t => !t.done);
+    saveTasks(tasks);
+    renderTasks();
+  }
+
+  document.getElementById('task-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') addTask();
+  });
+
+  renderTasks();
+
+  // ─── Meal Plan ───
+  const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const MEALS = ['breakfast', 'lunch', 'dinner'];
+  const MEAL_LABELS = ['Breakfast', 'Lunch', 'Dinner'];
+  let mealSaveTimer;
+
+  function mealKey(day, meal) {
+    return 'mc-meal-' + day + '-' + meal;
+  }
+
+  function saveMealCell(day, meal, value) {
+    localStorage.setItem(mealKey(day, meal), value);
+    const saved = document.getElementById('meal-saved');
+    saved.classList.add('show');
+    clearTimeout(mealSaveTimer);
+    mealSaveTimer = setTimeout(() => saved.classList.remove('show'), 1800);
+  }
+
+  function buildMealTable() {
+    const tbody = document.getElementById('meal-tbody');
+    DAYS.forEach(day => {
+      const tr = document.createElement('tr');
+      const tdDay = document.createElement('td');
+      tdDay.className = 'day-label';
+      tdDay.textContent = day;
+      tr.appendChild(tdDay);
+
+      MEALS.forEach((meal, i) => {
+        const td = document.createElement('td');
+        const div = document.createElement('div');
+        div.className = 'meal-cell';
+        div.contentEditable = 'true';
+        div.dataset.placeholder = MEAL_LABELS[i] + '...';
+        div.textContent = localStorage.getItem(mealKey(day, meal)) || '';
+        div.addEventListener('input', () => saveMealCell(day, meal, div.textContent.trim()));
+        td.appendChild(div);
+        tr.appendChild(td);
+      });
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  function clearMealPlan() {
+    if (!confirm('Clear all meal plan entries?')) return;
+    DAYS.forEach(day => MEALS.forEach(meal => localStorage.removeItem(mealKey(day, meal))));
+    document.querySelectorAll('.meal-cell').forEach(c => c.textContent = '');
+  }
+
+  buildMealTable();
 </script>
 </body>
 </html>
